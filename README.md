@@ -108,6 +108,15 @@ your_zip.zip:
 
 ___
 
+#### Plans (update might not be in order):
+
+- make gui script for easy navigation if user is planning to train locally
+- add option to use pretrained model
+- add enable/disable checks for breathiness and energy training [**THESE TWO OPTIONS ARE OFF BY DEFAULT**]
+- make NSF-HiFiGAN vocoder training notebook via [fish-diffusion](https://github.com/fishaudio/fish-diffusion)
+
+___
+
 **Credits:** 
 
   - [openvpi](https://openvpi.github.io/) for DiffSinger fork and more
@@ -119,3 +128,11 @@ ___
   - [MLo7](https://github.com/MLo7Ghinsan) for the notebook edit
 
   - [PixPrucer](https://twitter.com/PixPrucer?s=20) for an in-depth SVS guide
+
+___
+
+#### Extra Note:
+
+Wow you made it to the very bottom.... Why though lmao hahahahhshahhasdksajidhasjl
+
+Feel free to suggest or ask any question via [discord](https://discord.com/invite/wwbu2JUMjj) my user display name is MLo7 and my user name is ghin_mlo7
