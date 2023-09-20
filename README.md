@@ -112,7 +112,6 @@ ___
 
 - [script] make gui script for easy navigation if user is planning to train locally
 - [jupyter] add option to use pretrained model
-- [jupyter] add enable/disable checks for breathiness and energy training [**THESE TWO OPTIONS ARE OFF BY DEFAULT**]
 - [jupyter] make NSF-HiFiGAN vocoder training notebook via [fish-diffusion](https://github.com/fishaudio/fish-diffusion)
 
 ___
