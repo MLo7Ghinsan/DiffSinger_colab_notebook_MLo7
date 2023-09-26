@@ -13,7 +13,6 @@ ___
 
 #### IMPORTANT NOTE:
 
-- please make sure that your audio data is mono, otherwise nnsvs-db-converter will not work
 - your_speaker_folder's folder name will be used as *spk_name* so please be careful about your file naming
 - colab notebook primarily uses python; thus space in file name or folder path may be invalid
 - for an in-depth guide for SVS training and/or labeling, please see [SVS Singing Voice Database - Tutorial](https://docs.google.com/document/d/1uMsepxbdUW65PfIWL1pt2OM6ZKa5ybTTJOpZ733Ht6s/edit?usp=sharing)
@@ -110,7 +109,7 @@ ___
 
 #### Plans (update might not be in order):
 
-- [script] make gui script for easy navigation if user is planning to train locally
+- [script] add onnx evporter to ds_gui.py
 - [jupyter] add option to use pretrained model
 - [jupyter] make NSF-HiFiGAN vocoder training notebook via [fish-diffusion](https://github.com/fishaudio/fish-diffusion)
 
