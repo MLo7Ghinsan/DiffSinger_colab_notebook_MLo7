@@ -116,7 +116,7 @@ ___
 
 #### Plans (update might not be in order):
 
-- [script] add onnx evporter to ds_gui.py
+- [script] add onnx exporter to ds_gui.py
 - [jupyter] add option to use pretrained model
 - [jupyter] make NSF-HiFiGAN vocoder training notebook via [fish-diffusion](https://github.com/fishaudio/fish-diffusion)
 
