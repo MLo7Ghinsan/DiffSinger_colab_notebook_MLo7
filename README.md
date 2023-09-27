@@ -4,7 +4,7 @@
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
-- ds + wav (DiffSinger format)
+- ~~ds + wav (DiffSinger format)~~ broken
 
 (textgrid/OpenCpop format is not supported at the moment)
 
@@ -117,6 +117,7 @@ ___
 #### Plans (update might not be in order):
 
 - [script] add onnx exporter to ds_gui.py
+- [jupyter] Fix Training Notebool
 - [jupyter] add option to use pretrained model
 - [jupyter] make NSF-HiFiGAN vocoder training notebook via [fish-diffusion](https://github.com/fishaudio/fish-diffusion)
 
