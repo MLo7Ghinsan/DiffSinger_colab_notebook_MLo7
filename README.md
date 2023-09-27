@@ -6,8 +6,6 @@
 - csv + wav (DiffSinger format)
 - ~~ds + wav (DiffSinger format)~~ broken
 
-(textgrid/OpenCpop format is not supported at the moment)
-
 ## Access the notebook here: <a href="https://colab.research.google.com/github/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/DiffSinger_colab_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
 ___
 
