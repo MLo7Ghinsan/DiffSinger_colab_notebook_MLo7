@@ -115,7 +115,7 @@ ___
 #### Plans (update might not be in order):
 
 - [script] add onnx exporter to ds_gui.py
-- [jupyter] Fix Training Notebool
+- [jupyter] overhaul ou build section
 - [jupyter] add option to use pretrained model
 - [jupyter] make NSF-HiFiGAN vocoder training notebook via [fish-diffusion](https://github.com/fishaudio/fish-diffusion)
 
