@@ -116,8 +116,7 @@ ___
 
 - [script] add onnx exporter to ds_gui.py
 - [jupyter] overhaul ou build section
-- [jupyter] add option to use pretrained model
-- [jupyter] make NSF-HiFiGAN vocoder training notebook via [fish-diffusion](https://github.com/fishaudio/fish-diffusion)
+- [jupyter] make NSF-HiFiGAN vocoder training notebook
 
 ___
 
@@ -132,6 +131,8 @@ ___
   - [MLo7](https://github.com/MLo7Ghinsan) for the notebook edit
 
   - [PixPrucer](https://twitter.com/PixPrucer?s=20) for an in-depth SVS guide
+    
+  - [haru0l](https://x.com/mscoocoo2?s=20) for the base pretrain with embeds
 
 ___
 
