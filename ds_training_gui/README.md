@@ -1,4 +1,4 @@
-python 3.10 was used and is recommended
+### python 3.10 was used and is recommended
 
 required modules:
 - PyYAML
@@ -8,5 +8,5 @@ required modules:
 
 run `pip install PyYAML tk tqdm requests` if you don't have these modules
 
-###note:
+### note:
 If running the script by itself and nothing happens, please run the gui script through commandline
