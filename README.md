@@ -4,7 +4,7 @@
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
-- ~~ds + wav (DiffSinger format)~~ broken
+- ds + wav (DiffSinger format)
 
 ## Access the notebook here: <a href="https://colab.research.google.com/github/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/DiffSinger_colab_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
 ___
@@ -109,7 +109,7 @@ ___
 
 - [script] add onnx exporter to ds_gui.py
 - [jupyter] overhaul ou build section
-- [jupyter] make NSF-HiFiGAN vocoder training notebook
+- [jupyter] make vocoder training notebook
 
 ___
 
