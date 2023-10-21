@@ -9,4 +9,6 @@ required modules:
 run `pip install PyYAML tk tqdm requests` if you don't have these modules
 
 ### note:
-If running the script by itself and nothing happens, please run the gui script through commandline
+- If running the script by itself and nothing happens, please run the gui script through commandline
+
+- If training doesn't detect user's GPU, please make sure that you have installed torch with cuda
