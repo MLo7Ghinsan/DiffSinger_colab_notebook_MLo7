@@ -108,7 +108,6 @@ ___
 #### Plans (update might not be in order):
 
 - [script] add onnx exporter to ds_gui.py
-- [jupyter] overhaul ou build section
 - [jupyter] make vocoder training notebook
 
 ___
