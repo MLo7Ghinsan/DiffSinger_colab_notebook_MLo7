@@ -1,6 +1,3 @@
-# DiffSinger_colab_notebook_MLo7
-### MLo7 DiffSinger training colab notebook an edited copy of Kei's DiffSinger colab notebook
-
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
@@ -14,12 +11,10 @@ ___
 - your_speaker_folder's folder name will be used as *spk_name* so please be careful about your file naming
 - colab notebook primarily uses python; thus space in file name or folder path may be invalid
 - for an in-depth guide for SVS training and/or labeling, please see [SVS Singing Voice Database - Tutorial](https://docs.google.com/document/d/1uMsepxbdUW65PfIWL1pt2OM6ZKa5ybTTJOpZ733Ht6s/edit?usp=sharing)
+- it is advised to edit your data using [SlurCutter](https://github.com/openvpi/MakeDiffSinger/releases) for a more refined data for your pitch model
+- please visit [DiffSinger Discord](https://discord.com/invite/wwbu2JUMjj) for any help and questions regarding model production
 
-This notebook converts your data (lab + wav) to compatible format via [nnsvs-db-converter](https://github.com/UtaUtaUtau/nnsvs-db-converter)
-
-It is advised to edit your data using [SlurCutter](https://github.com/openvpi/MakeDiffSinger/releases) for a more refined data for your pitch model
-
-Zip file format [example](https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/releases/tag/ref):
+Zip file format [examples](https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/releases/tag/ref):
 <pre>
 #single speaker (lab + wav | ds + wav)
 your_zip.zip:
@@ -108,6 +103,9 @@ ___
 #### Plans (update might not be in order):
 
 - [script] add onnx exporter to ds_gui.py
+- [colab] add export .ds script to be used with SlurCutter
+- [doc] add an easy "how to create a DiffSinger model" document
+- [doc] add video(s) of model making process (quick notebook guide)
 
 ___
 
@@ -124,11 +122,3 @@ ___
   - [PixPrucer](https://twitter.com/PixPrucer?s=20) for an in-depth SVS guide
     
   - [haru0l](https://x.com/mscoocoo2?s=20) for the base pretrain with embeds
-
-___
-
-#### Extra Note:
-
-Wow you made it to the very bottom.... Why though lmao hahahahhshahhasdksajidhasjl
-
-Feel free to suggest or ask any question via [discord](https://discord.com/invite/wwbu2JUMjj) my user display name is MLo7 and my user name is ghin_mlo7
