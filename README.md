@@ -104,6 +104,7 @@ ___
 
 - [script] add onnx exporter to ds_gui.py
 - [colab] add export .ds script to be used with SlurCutter
+- [colab] clean up nsf finetuning notebook and further edit needed
 - [doc] add an easy "how to create a DiffSinger model" document
 - [doc] add video(s) of model making process (quick notebook guide)
 
@@ -117,7 +118,7 @@ ___
 
   - [Kei](https://pronouns.page/@kei.wendt06) for the original notebook
 
-  - [MLo7](https://github.com/MLo7Ghinsan) for the notebook edit
+  - [MLo7](https://github.com/MLo7Ghinsan) for the repo's content
 
   - [PixPrucer](https://twitter.com/PixPrucer?s=20) for an in-depth SVS guide
     
