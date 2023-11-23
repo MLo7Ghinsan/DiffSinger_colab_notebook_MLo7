@@ -102,9 +102,9 @@ ___
 
 #### Plans (update might not be in order):
 
-- [script] add onnx exporter to ds_gui.py
+- [script] update ds_gui.py
 - [colab] add export .ds script to be used with SlurCutter
-- [colab] clean up nsf finetuning notebook and further edit needed
+- [colab] add resume training option to NSF vocoder finetuning notebook
 - [doc] add an easy "how to create a DiffSinger model" document
 - [doc] add video(s) of model making process (quick notebook guide)
 
