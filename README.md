@@ -104,7 +104,6 @@ ___
 
 - [script] update ds_gui.py
 - [colab] add export .ds script to be used with SlurCutter
-- [colab] add resume training option to NSF vocoder finetuning notebook
 - [doc] add an easy "how to create a DiffSinger model" document
 - [doc] add video(s) of model making process (quick notebook guide)
 
