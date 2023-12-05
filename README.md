@@ -1,7 +1,7 @@
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
-- ds + wav (DiffSinger format) (not fully tested)
+- ds + wav (DiffSinger format)
 
 ## Access the notebook here: <a href="https://colab.research.google.com/github/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/DiffSinger_colab_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
 ___
@@ -103,7 +103,6 @@ ___
 #### Plans (update might not be in order):
 
 - [script] update ds_gui.py
-- [colab] add export .ds script to be used with SlurCutter
 - [doc] add an easy "how to create a DiffSinger model" document
 - [doc] add video(s) of model making process (quick notebook guide)
 
