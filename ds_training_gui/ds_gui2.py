@@ -1,4 +1,4 @@
-import zipfile, shutil, csv, json, yaml, random, subprocess, os, requests
+import zipfile, shutil, csv, json, yaml, random, subprocess, os, requests, re
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, Menu
 from tqdm import tqdm
@@ -25,9 +25,17 @@ class App(tk.Tk):
         style.configure('TRadiobutton', foreground = "Cyan3", font = "Bahnschrift 16")
         style.map("TRadiobutton", background = [("active", "gray18")])
         style.configure("TRadiobutton", indicatorbackground="gray18", indicatorforeground="cyan3")
+        style.map("TCombobox", background = [("active", "gray18")])
+        style.configure("TCombobox", darkcolor = "gray18", bordercolor = "gray18", focusfill = "gray18", fieldbackground = "gray18", insertcolor = "gray18", selectbackground="gray18", selectforeground="cyan3", background="gray18", foreground="cyan3")
         self.create_widgets()
 
+        main_path = os.getcwd()
+        os.chdir(main_path)
+
         self.all_shits = None #forcing users to select the folder <3
+        self.data_folder = None #more forces
+        self.ckpt_save_dir = None #even more forces
+        self.trainselect_option = None #rawr
 
     def create_widgets(self):
 
@@ -74,7 +82,7 @@ class App(tk.Tk):
         tab2.label.grid(row = 0, column = 1, padx = (120, 20), pady = (50, 0))
         global max_sil_length
         max_sil_length = tk.StringVar(value = 0.5)
-        tab2.maxsillength_scale = tk.Scale(tab2, variable = max_sil_length, resolution = "0.5", from_ = 0, to = 5, orient = "horizontal", length = 150, bg = "gray18", fg = "cyan3", font = "Bahnschrift")
+        tab2.maxsillength_scale = tk.Scale(tab2, variable = max_sil_length, resolution = "0.25", from_ = 0, to = 5, orient = "horizontal", length = 150, bg = "gray18", fg = "cyan3", font = "Bahnschrift")
         tab2.maxsillength_scale.grid(row = 1, column = 1, padx = (120, 20))
         tab2.maxsillength_box = ttk.Entry(tab2, textvariable = max_sil_length, width = 5)
         tab2.maxsillength_box.grid(row = 2, column = 1, padx = (120, 20))
@@ -102,7 +110,7 @@ class App(tk.Tk):
         global detectbreath
         detectbreath = self.breathcheckvar
 
-        ttk.Button(tab2, text = "Select raw data folder", command = self.grab_data).grid(row = 6, columnspan = 2, pady = (25, 0), padx = (165, 20))
+        ttk.Button(tab2, text = "Select raw data folder", command = self.grab_raw_data).grid(row = 6, columnspan = 2, pady = (25, 0), padx = (165, 20))
         ttk.Button(tab2, text = "Segment and format data", command = self.run_segment).grid(row = 7, columnspan = 2, pady = (25, 0), padx = (165, 20))
 
         #CONFIG TAB
@@ -114,14 +122,8 @@ class App(tk.Tk):
         global trainselect
         trainselect = self.trainselect_option
 
-        self.shallow_var = tk.BooleanVar()
-        tab3.shallowcheck = ttk.Checkbutton(tab3, text = "Use shallow diffusion", variable = self.shallow_var)
-        tab3.shallowcheck.grid(row = 1, column = 0, columnspan = 2)
-        global shallowdiff
-        shallowdiff = self.shallow_var
-
-        ttk.Button(tab3, text = "Select binary folder").grid(row = 2, column = 0, pady = (10, 0))
-        ttk.Button(tab3, text = "Select checkpoint folder").grid(row = 2, column = 1, pady = (10, 0))
+        ttk.Button(tab3, text = "Select data folder", command = self.grab_data_folder).grid(row = 2, column = 0, pady = (10, 0))
+        ttk.Button(tab3, text = "Select save folder", command = self.ckpt_folder_save).grid(row = 2, column = 1, pady = (10, 0))
 
         tab3.label = ttk.Label(tab3, text = "-------------------------------------------------------------------------------").grid(row = 3, column = 0, columnspan = 2, padx = 50, pady = 5)
 
@@ -129,27 +131,41 @@ class App(tk.Tk):
         self.fixedaugvar = tk.BooleanVar()
         tab3.fixedcheck = ttk.Checkbutton(tab3, text = "Fixed pitch", variable = self.fixedaugvar)
         tab3.fixedcheck.grid(row = 4, column = 1)
+        global fixedaug
+        fixedaug = self.fixedaugvar
         self.randomaugvar = tk.BooleanVar()
         tab3.randomcheck = ttk.Checkbutton(tab3, text = "Random pitch", variable = self.randomaugvar)
         tab3.randomcheck.grid(row = 5, column = 0)
+        global randomaug
+        randomaug = self.randomaugvar
         self.stretchvar = tk.BooleanVar()
         tab3.stretchcheck = ttk.Checkbutton(tab3, text = "Time stretching", variable = self.stretchvar)
         tab3.stretchcheck.grid(row = 5, column = 1)
+        global stretchaug
+        stretchaug = self.stretchvar
 
         tab3.label = ttk.Label(tab3, text = "-------------------------------------------------------------------------------").grid(row = 6, column = 0, columnspan = 2, padx = 50, pady = 5)
 
         self.train_ene_var = tk.BooleanVar()
         tab3.ene_check = ttk.Checkbutton(tab3, text = "Train energy", variable = self.train_ene_var)
         tab3.ene_check.grid(row = 7, column = 0)
+        global train_energy
+        train_energy = self.train_ene_var
         self.train_bre_var = tk.BooleanVar()
         tab3.bre_check = ttk.Checkbutton(tab3, text = "Train breathiness", variable = self.train_bre_var)
         tab3.bre_check.grid(row = 7, column = 1)
+        global train_bre
+        train_bre = self.train_bre_var
         self.train_pit_var = tk.BooleanVar()
         tab3.pit_check = ttk.Checkbutton(tab3, text = "Train pitch", variable = self.train_pit_var)
         tab3.pit_check.grid(row = 8, column = 0)
+        global train_pitch
+        train_pitch = self.train_pit_var
         self.train_dur_var = tk.BooleanVar()
         tab3.dur_check = ttk.Checkbutton(tab3, text = "Train duration", variable = self.train_dur_var)
         tab3.dur_check.grid(row = 8, column = 1)
+        global train_dur
+        train_dur = self.train_dur_var
 
         tab3.label = ttk.Label(tab3, text = "-------------------------------------------------------------------------------").grid(row = 9, column = 0, columnspan = 2, padx = 50, pady = 5)
 
@@ -175,23 +191,26 @@ class App(tk.Tk):
 
         self.precision_option = tk.StringVar()
         self.option_menu = ttk.Combobox(tab3, textvariable = self.precision_option)  
-        self.option_menu['values'] = ["idk", "placeholder", "values here", "i think there's 4"]
+        self.option_menu['values'] = ["32-true", "bf16-mixed", "16-mixed", "bf16", "16"]
         self.option_menu['state'] = 'readonly'
-        self.prec1_var = tk.BooleanVar()
-        self.prec2_var = tk.BooleanVar()
-        self.prec3_var = tk.BooleanVar()
-        self.prec4_var = tk.BooleanVar()
         self.option_menu.grid(row = 13, column = 0, pady = (10, 0))
 
-        self.sample_var = tk.BooleanVar()
-        tab3.samplecheck = ttk.Checkbutton(tab3, text = "Randomize samples", variable = self.sample_var)
-        tab3.samplecheck.grid(row = 13, column = 1)
-        global randomsample
-        randomsample = self.sample_var
+        self.shallow_var = tk.BooleanVar()
+        tab3.shallowcheck = ttk.Checkbutton(tab3, text = "Use shallow diffusion", variable = self.shallow_var)
+        tab3.shallowcheck.grid(row = 13, column = 1)
+        global shallow_diff
+        shallow_diff = self.shallow_var
 
-        ttk.Button(tab3, text = "Write config").grid(row = 14, column = 0, pady = (10, 0))
-        ttk.Button(tab3, text = "Binarize").grid(row = 14, column = 1, pady = (10, 0))
+        ttk.Button(tab3, text = "Write config", command = self.write_config).grid(row = 14, column = 0, pady = (10, 0))
+        ttk.Button(tab3, text = "Binarize", command = self.binarize).grid(row = 14, column = 1, pady = (10, 0))
 
+        #TRAINING TAB
+        ttk.Button(tab4, text = "Select config", command = self.load_config_function).grid(row = 0, column = 0, padx = (175, 100), pady = (50, 50))
+        ttk.Button(tab4, text = "Select save folder", command = self.ckpt_folder_save).grid(row = 0, column = 1, padx = (100, 175), pady = (50, 50))
+        ttk.Button(tab4, text = "Train!", command = self.train_function).grid(row = 1, column = 0, columnspan = 2)
+        ttk.Label(tab4, text = "This window will not respond during training.").grid(row = 2, column = 0, columnspan = 2, pady = (50, 5))
+        ttk.Label(tab4, text = "To stop training, press Ctrl+C in the command line window.").grid(row = 3, column = 0, columnspan = 2, pady = 5)
+        
     ##FINAL COMMANDS
     global all_shits_not_wav_n_lab
     all_shits_not_wav_n_lab = "raw_data/diffsinger_db"
@@ -300,7 +319,7 @@ class App(tk.Tk):
         print("Setup Complete!")
 
 
-    def grab_data(self):
+    def grab_raw_data(self):
         self.all_shits = filedialog.askdirectory(title="Select raw data folder", initialdir = "raw_data")
         print("raw data path: " + self.all_shits)
 
@@ -506,7 +525,186 @@ class App(tk.Tk):
                         shutil.move(stuff_path, singer_folder_dat_main)
                 shutil.rmtree(diff_singer_db_path)
         print("data segmentation complete!")
+
+    def grab_data_folder(self):
+        self.data_folder = filedialog.askdirectory(title="Select data folder", initialdir = "DiffSinger")
+        print("data path: " + self.data_folder)
+
+    def ckpt_folder_save(self):
+        global ckpt_save_dir
+        ckpt_save_dir = filedialog.askdirectory(title="Select save folder", initialdir = "DiffSinger/checkpoints")
+        self.binary_save_dir = ckpt_save_dir + "/binary"
+        print("save path: " + self.ckpt_save_dir)
         
+    def write_config(self):
+        #adding checks lmao make sure they select them
+        config_check = trainselect.get()
+        if not config_check:
+            messagebox.showinfo("Required", "Please select a config type")
+            return
+        if self.data_folder is None:
+            messagebox.showinfo("Required", "Please select a folder containing data folder(s)")
+            return
+        if self.ckpt_save_dir is None:
+            messagebox.showinfo("Required", "Please select a save directory")
+            return
+        print("writing config...")
+        spk_name = [folder_name for folder_name in os.listdir(self.data_folder) if os.path.isdir(os.path.join(self.data_folder, folder_name))]
+        # i used spk_name for something else cus i forgor now imma just copy and paste it
+        spk_names = [folder_name for folder_name in os.listdir(self.data_folder) if os.path.isdir(os.path.join(self.data_folder, folder_name))]
+        num_spk = len(spk_name)
+        raw_dir = []
+        for folder_name in spk_name:
+            folder_path = os.path.join(self.data_folder, folder_name)
+            raw_dir.append(folder_path)
+        if num_spk == 1:
+            singer_type = "SINGLE-SPEAKER"
+            diff_loss_type = "l2"
+            f0_emb = "continuous"
+            use_spk_id = False
+            all_wav_files = []
+            for root, dirs, files in os.walk(self.data_folder):
+                for file in files:
+                    if file.endswith(".wav"):
+                        full_path = os.path.join(root, file)
+                        all_wav_files.append(full_path)
+            random.shuffle(all_wav_files)
+            random_ass_wavs = all_wav_files[:3]
+            random_ass_test_files = [os.path.splitext(os.path.basename(file))[0] for file in random_ass_wavs]
+
+        else:
+            singer_type = "MULTI-SPEAKER"
+            diff_loss_type = "l1"
+            f0_emb = "discrete"
+            use_spk_id = True
+            folder_to_id = {folder_name: i for i, folder_name in enumerate(spk_name)}
+            random_ass_test_files = []
+            for folder_path in raw_dir:
+                audio_files = [f[:-4] for f in os.listdir(folder_path + "/wavs") if f.endswith(".wav")]
+                folder_name = os.path.basename(folder_path)
+                folder_id = folder_to_id.get(folder_name, -1)
+                prefixed_audio_files = [f"{folder_id}:{audio_file}" for audio_file in audio_files]
+                random_ass_test_files.extend(prefixed_audio_files[:3])
+        spk_id = []
+        for i, spk_name in enumerate(spk_name):
+            spk_id_format = f"{i}:{spk_name}"
+            spk_id.append(spk_id_format)
+
+ # commenting this out bc its pointless, tbh it doesnt even needs its own def, just include it with write_config or sumn
+ # you can remove this btw if you feel like it, if not then i can come back to it later
+ #       def update_precision(selected_value):
+ #           with open("DiffSinger/configs/base.yaml", "r") as config:
+ #               config_data = yaml.safe_load(config)
+ #           config_data["pl_trainer_precision"] = precision.get()
+ #           with open("DiffSinger/configs/base.yaml", "w") as config:
+ #               yaml.dump(config_data, config)
+
+ #       def update_config():   <----- this is not really needed
+        enable_fixed_aug = fixedaug.get()
+        enable_random_aug = randomaug.get()
+        enable_stretch_aug = stretchaug.get()
+        energy = train_energy.get()
+        pitch = train_pitch.get()
+        breath = train_bre.get()
+        duration = train_dur.get()
+        shallow = shallow_diff.get()
+        save_interval = save_int.get()
+        batch = batch_size.get()
+        selected_config_type = trainselect.get()
+        if selected_config_type == "Acoustic Training":
+            with open("DiffSinger/configs/acoustic.yaml", "r") as config:
+                bitch_ass_config = yaml.safe_load(config)
+            bitch_ass_config["speakers"] = spk_names
+            bitch_ass_config["test_prefixes"] = random_ass_test_files
+            bitch_ass_config["raw_data_dir"] = raw_dir
+            bitch_ass_config["num_spk"] = num_spk
+            bitch_ass_config["use_spk_id"] = use_spk_id
+            #bitch_ass_config["spk_ids"] = spk_id
+            bitch_ass_config["diff_loss_type"] = diff_loss_type
+            bitch_ass_config["f0_embed_type"] = f0_emb
+            bitch_ass_config["binary_data_dir"] = self.binary_save_dir
+            bitch_ass_config["dictionary"] = "dictionaries/custom_dict.txt"
+            bitch_ass_config["augmentation_args"]["fixed_pitch_shifting"]["enabled"] = enable_fixed_aug
+            bitch_ass_config["augmentation_args"]["random_pitch_shifting"]["enabled"] = enable_random_aug
+            bitch_ass_config["augmentation_args"]["random_time_stretching"]["enabled"] = enable_stretch_aug
+            bitch_ass_config["use_key_shift_embed"] = enable_random_aug
+            bitch_ass_config["use_speed_embed"] = enable_stretch_aug
+            bitch_ass_config["max_batch_size"] = int(batch)
+            #ive never tried reaching the limit so ill trust kei's setting for this(MLo7)
+            #sounds like a lot of users can go higher but 9 is a good start(Aster)
+            bitch_ass_config["val_check_interval"] = int(save_interval)
+            bitch_ass_config["use_energy_embed"] = energy
+            bitch_ass_config["use_breathiness_embed"] = breath
+            #shallow diff stuff
+            bitch_ass_config["use_shallow_diffusion"] = shallow
+            bitch_ass_config["shallow_diffusion_args"]["val_gt_start"] = shallow
+            with open("DiffSinger/configs/acoustic.yaml", "w") as config:
+                yaml.dump(bitch_ass_config, config)
+            print("wrote acoustic config!")
+
+        else:
+            with open("DiffSinger/configs/variance.yaml", "r") as config:
+                bitch_ass_config = yaml.safe_load(config)
+            bitch_ass_config["speakers"] = spk_names
+            bitch_ass_config["test_prefixes"] = random_ass_test_files
+            bitch_ass_config["raw_data_dir"] = raw_dir
+            bitch_ass_config["num_spk"] = num_spk
+            bitch_ass_config["use_spk_id"] = use_spk_id
+            bitch_ass_config["diff_loss_type"] = diff_loss_type
+            bitch_ass_config["binary_data_dir"] = self.binary_save_dir
+            bitch_ass_config["dictionary"] = "dictionaries/custom_dict.txt"
+            bitch_ass_config["max_batch_size"] = int(batch) #ive never tried reaching the limit so ill trust kei's setting for this
+            bitch_ass_config["val_check_interval"] = int(save_interval)
+            bitch_ass_config["predict_energy"] = energy
+            bitch_ass_config["predict_breathiness"] = breath
+            bitch_ass_config["predict_pitch"] = pitch
+            bitch_ass_config["predict_dur"] = duration
+            with open("DiffSinger/configs/variance.yaml", "w") as config:
+                yaml.dump(bitch_ass_config, config)
+            print("wrote variance config!")
+
+        new_f0_max = 1600
+        with open("DiffSinger/utils/binarizer_utils.py", "r") as f:
+            f0_read = f.read()
+        up_f0_val = re.sub(r"f0_max\s*=\s*.*", f"f0_max = {new_f0_max}", f0_read)
+        with open("DiffSinger/utils/binarizer_utils.py", "w") as f:
+            f.write(up_f0_val)
+
+    def binarize(self):
+        os.chdir("DiffSinger")
+        os.environ["PYTHONPATH"] = "."
+        os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+        config_check = trainselect.get()
+        cmd = ['python', 'scripts/binarize.py', '--config']
+        if config_check == "Acoustic Training":
+            print("binarizing acoustic...")
+            cmd.append('configs/acoustic.yaml')
+        elif config_check == "Variance Training":
+            print("binarizing variance...")
+            cmd.append('configs/variance.yaml')
+        else:
+            messagebox.showinfo("Required", "Please select a config type")
+            return
+        print(' '.join(cmd))
+        output = subprocess.check_output(cmd, universal_newlines=True)
+        print(output)
+        os.chdir(main_path)
+
+    def load_config_function(self):
+        global configpath
+        configpath = filedialog.askopenfilename(title="Select config file", initialdir="DiffSinger/configs/", filetypes=[("Config files", "*.yaml")])
+        print(configpath)
+
+    def train_function(self):
+        os.chdir("DiffSinger")
+        os.environ["PYTHONPATH"] = "."
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+        if not configpath or not ckpt_save_dir:
+            self.label.config(text="Please select your config and the data you would like to preprocess first!")
+            return
+        subprocess.check_call(['python', 'scripts/train.py', '--config', configpath, '--exp_name', ckpt_save_dir, '--reset'])
+
+
 if __name__ == "__main__":
     app = App()
     app.mainloop()
