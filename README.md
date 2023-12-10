@@ -102,7 +102,6 @@ ___
 
 #### Plans (update might not be in order):
 
-- [script] update ds_gui.py
 - [doc] add an easy "how to create a DiffSinger model" document
 - [doc] add video(s) of model making process (quick notebook guide)
 
