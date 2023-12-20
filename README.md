@@ -102,8 +102,7 @@ ___
 
 #### Plans (update might not be in order):
 
-- [doc] add an easy "how to create a DiffSinger model" document
-- [doc] add video(s) of model making process (quick notebook guide)
+- [notebook] improve SOFA notebook
 
 ___
 
