@@ -5,6 +5,7 @@ required modules:
 - tk
 - tqdm
 - requests
+
 a dedicated conda environment is suggested, but not required
 
 run `pip install PyYAML tk tqdm requests` if you don't have these modules
@@ -17,8 +18,10 @@ run `pip install PyYAML tk tqdm requests` if you don't have these modules
 
 ### known issues & quirks:
 - download dependencies does not detect cuda for torch version, cuda users please reinstall torch with cuda from command line
+  
 - after editing configs or preprocessing, the gui develops amnesia and forgets where it is. relaunch
 
 ### intended future additions:
 - onnx exports and set up for use in openutau
+  
 - button to update only diffsinger and db converter files
