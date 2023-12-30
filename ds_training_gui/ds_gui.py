@@ -60,7 +60,7 @@ class App(tk.Tk):
         tab1.label.pack(side = "top", pady = (200, 0))
         tab1.label = ttk.Label(tab1, text ="by MLo7 & AgentAsteriski")
         tab1.label.pack()
-        tab1.label = ttk.Label(tab1, text ="updated 12/8/23", font = "Bahnschrift 10")
+        tab1.label = ttk.Label(tab1, text ="updated 12/29/23", font = "Bahnschrift 10")
         tab1.label.pack()
         tab1.button = ttk.Button(tab1, text="Download dependencies", command=self.dl_scripts_github)
         tab1.button.pack()
@@ -211,6 +211,13 @@ class App(tk.Tk):
         ttk.Label(tab4, text = "This window will not respond during training.").grid(row = 2, column = 0, columnspan = 2, pady = (50, 5))
         ttk.Label(tab4, text = "To stop training, press Ctrl+C in the command line window.").grid(row = 3, column = 0, columnspan = 2, pady = 5)
         
+        #EXPORT TAB
+        dropspkframe = ttk.Frame(tab5, height = 250, width = 250, relief = 'ridge', borderwidth = 5, padding = 10).grid(row = 0, column = 0, padx = 50, pady = 50)
+        ttk.Button(dropspkframe, text = "Select multispeaker ckpt").pack
+        
+
+
+
     ##FINAL COMMANDS
     global all_shits_not_wav_n_lab
     all_shits_not_wav_n_lab = "raw_data/diffsinger_db"
@@ -305,6 +312,7 @@ class App(tk.Tk):
             "time_step": 0.005,
             "f0_min": 40,
             "f0_max": 1100,
+            "audio_sample_rate": 44100,
             "voicing_treshold_midi": 0.45,
             "voicing_treshold_breath": 0.6,
             "breath_window_size": 0.05,
@@ -534,7 +542,7 @@ class App(tk.Tk):
         global ckpt_save_dir
         ckpt_save_dir = filedialog.askdirectory(title="Select save folder", initialdir = "DiffSinger/checkpoints")
         self.binary_save_dir = ckpt_save_dir + "/binary"
-        print("save path: " + self.ckpt_save_dir)
+        print("save path: " + ckpt_save_dir)
         
     def write_config(self):
         #adding checks lmao make sure they select them
@@ -545,7 +553,7 @@ class App(tk.Tk):
         if self.data_folder is None:
             messagebox.showinfo("Required", "Please select a folder containing data folder(s)")
             return
-        if self.ckpt_save_dir is None:
+        if ckpt_save_dir is None:
             messagebox.showinfo("Required", "Please select a save directory")
             return
         print("writing config...")
