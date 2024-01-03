@@ -82,7 +82,7 @@ class App(tk.Tk):
         tab2.label.grid(row = 0, column = 1, padx = (120, 20), pady = (50, 0))
         global max_sil_length
         max_sil_length = tk.StringVar(value = 0.5)
-        tab2.maxsillength_scale = tk.Scale(tab2, variable = max_sil_length, resolution = "0.25", from_ = 0, to = 5, orient = "horizontal", length = 150, bg = "gray18", fg = "cyan3", font = "Bahnschrift")
+        tab2.maxsillength_scale = tk.Scale(tab2, variable = max_sil_length, resolution = "0.25", from_ = 0, to = 10, orient = "horizontal", length = 150, bg = "gray18", fg = "cyan3", font = "Bahnschrift")
         tab2.maxsillength_scale.grid(row = 1, column = 1, padx = (120, 20))
         tab2.maxsillength_box = ttk.Entry(tab2, textvariable = max_sil_length, width = 5)
         tab2.maxsillength_box.grid(row = 2, column = 1, padx = (120, 20))
