@@ -320,7 +320,7 @@ class App(tk.Tk):
             "breath_db_threshold": -60,
             "breath_centroid_treshold": 2000,
             "max-length-relaxation-factor": 0.1,
-            "pitch-extractor": "parselmouth",
+            "pitch-extractor": parselmouth,
             "write_label": "htk"
         }
         with open("db_converter_config.yaml", "w") as config:
