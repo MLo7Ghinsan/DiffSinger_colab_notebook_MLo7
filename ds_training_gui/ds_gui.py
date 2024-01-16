@@ -60,7 +60,7 @@ class App(tk.Tk):
         tab1.label.pack(side = "top", pady = (200, 0))
         tab1.label = ttk.Label(tab1, text ="by MLo7 & AgentAsteriski")
         tab1.label.pack()
-        tab1.label = ttk.Label(tab1, text ="updated 12/29/23", font = "Bahnschrift 10")
+        tab1.label = ttk.Label(tab1, text ="updated 1/16/24", font = "Bahnschrift 10")
         tab1.label.pack()
         tab1.button = ttk.Button(tab1, text="Download dependencies", command=self.dl_scripts_github)
         tab1.button.pack()
@@ -308,7 +308,7 @@ class App(tk.Tk):
             os.remove("db_converter_config.yaml")
 
         converter_config = {
-            "use_cents": False,
+            "use_cents": True,
             "time_step": 0.005,
             "f0_min": 40,
             "f0_max": 1100,
@@ -319,6 +319,8 @@ class App(tk.Tk):
             "breath_min_length": 0.1,
             "breath_db_threshold": -60,
             "breath_centroid_treshold": 2000,
+            "max-length-relaxation-factor": 0.1,
+            "pitch-extractor": parselmouth
             "write_label": "htk"
         }
         with open("db_converter_config.yaml", "w") as config:
