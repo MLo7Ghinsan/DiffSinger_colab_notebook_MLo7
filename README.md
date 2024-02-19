@@ -119,3 +119,5 @@ ___
   - [PixPrucer](https://twitter.com/PixPrucer?s=20) for an in-depth SVS guide
     
   - [haru0l](https://x.com/mscoocoo2?s=20) for the base pretrain with embeds
+
+  - [AgentAsteriski](https://github.com/agentasteriski) for the current local GUI
