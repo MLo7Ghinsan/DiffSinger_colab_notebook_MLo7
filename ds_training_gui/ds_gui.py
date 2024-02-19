@@ -229,6 +229,7 @@ class App(tk.Tk):
         global onnx_folder
         onnx_folder = self.onnx_folder_save
         ttk.Button(tab5, text = "Export onnx", command = self.run_onnx_export).grid(row = 2, column = 2, columnspan = 3, pady = (10, 0))
+        ttk.Label(tab5, text = "THIS TAB DOESN'T WORK YET").grid(row = 3, column = 1, padx = 10, pady = 10)
 
 
 
@@ -363,7 +364,7 @@ class App(tk.Tk):
 
 
         if os.path.exists("nnsvs-db-converter") or os.path.exists("DiffSinger"):
-            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them?")
+            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them? Make sure any user files are backed up OUTSIDE of the Diffsinger folder.")
             if not user_response:
                 return
 
@@ -471,7 +472,7 @@ class App(tk.Tk):
 
 
         if os.path.exists("nnsvs-db-converter") or os.path.exists("DiffSinger"):
-            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them?")
+            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them? Make sure any user files are backed up OUTSIDE of the Diffsinger folder.")
             if not user_response:
                 return
 
