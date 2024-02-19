@@ -60,10 +60,15 @@ class App(tk.Tk):
         tab1.label.pack(side = "top", pady = (200, 0))
         tab1.label = ttk.Label(tab1, text ="by MLo7 & AgentAsteriski")
         tab1.label.pack()
-        tab1.label = ttk.Label(tab1, text ="updated 1/16/24", font = "Bahnschrift 10")
+        tab1.label = ttk.Label(tab1, text ="updated 2/19/24", font = "Bahnschrift 10")
         tab1.label.pack()
-        tab1.button = ttk.Button(tab1, text="Download dependencies", command=self.dl_scripts_github)
+        tab1.button = ttk.Button(tab1, text="Full download(no CUDA)", command=self.dl_scripts_github)
         tab1.button.pack()
+        tab1.button = ttk.Button(tab1, text="Full download(yes CUDA)", command=self.dl_scripts_github2)
+        tab1.button.pack()
+        tab1.button = ttk.Button(tab1, text="Update DS/Segmenter", command=self.dl_update)
+        tab1.button.pack()
+        
 
         #SEGMENT TAB
 
@@ -147,15 +152,15 @@ class App(tk.Tk):
         tab3.label = ttk.Label(tab3, text = "-------------------------------------------------------------------------------").grid(row = 6, column = 0, columnspan = 2, padx = 50, pady = 5)
 
         self.train_ene_var = tk.BooleanVar()
-        tab3.ene_check = ttk.Checkbutton(tab3, text = "Train energy", variable = self.train_ene_var)
+        tab3.ene_check = ttk.Checkbutton(tab3, text = "Train energy/breath", variable = self.train_ene_var)
         tab3.ene_check.grid(row = 7, column = 0)
         global train_energy
         train_energy = self.train_ene_var
-        self.train_bre_var = tk.BooleanVar()
-        tab3.bre_check = ttk.Checkbutton(tab3, text = "Train breathiness", variable = self.train_bre_var)
-        tab3.bre_check.grid(row = 7, column = 1)
-        global train_bre
-        train_bre = self.train_bre_var
+        self.train_ten_var = tk.BooleanVar()
+        tab3.ten_check = ttk.Checkbutton(tab3, text = "Train tension", variable = self.train_ten_var)
+        tab3.ten_check.grid(row = 7, column = 1)
+        global train_ten
+        train_ten = self.train_ten_var
         self.train_pit_var = tk.BooleanVar()
         tab3.pit_check = ttk.Checkbutton(tab3, text = "Train pitch", variable = self.train_pit_var)
         tab3.pit_check.grid(row = 8, column = 0)
@@ -212,9 +217,19 @@ class App(tk.Tk):
         ttk.Label(tab4, text = "To stop training, press Ctrl+C in the command line window.").grid(row = 3, column = 0, columnspan = 2, pady = 5)
         
         #EXPORT TAB
-        dropspkframe = ttk.Frame(tab5, height = 250, width = 250, relief = 'ridge', borderwidth = 5, padding = 10).grid(row = 0, column = 0, padx = 50, pady = 50)
-        ttk.Button(dropspkframe, text = "Select multispeaker ckpt").pack
-        
+        self.expselect_option = tk.StringVar()
+        tab5.option1 = ttk.Radiobutton(tab5, text="Acoustic", variable=self.expselect_option, value="acoustic")
+        tab5.option1.grid(row = 1, column = 0, padx = (50, 0), pady = (10, 0))
+        tab5.option2 = ttk.Radiobutton(tab5, text="Variance", variable=self.expselect_option, value="variance")
+        tab5.option2.grid(row = 1, column = 1, pady = (10, 0))
+        global expselect
+        expselect = self.expselect_option
+        ttk.Button(tab5, text = "Select checkpoint folder", command = self.ckpt_folder_save).grid(row = 1, column = 2, columnspan = 2, padx = (50, 0), pady = (10, 0))
+        ttk.Button(tab5, text = "Select export folder", command = self.onnx_folder_save).grid(row = 1, column = 4, columnspan = 2, padx = (50, 0), pady = (10, 0))
+        global onnx_folder
+        onnx_folder = self.onnx_folder_save
+        ttk.Button(tab5, text = "Export onnx", command = self.run_onnx_export).grid(row = 2, column = 2, columnspan = 3, pady = (10, 0))
+        ttk.Label(tab5, text = "THIS TAB DOESN'T WORK YET").grid(row = 3, column = 1, padx = 10, pady = 10)
 
 
 
@@ -233,13 +248,14 @@ class App(tk.Tk):
         diffsinger_zip = os.path.join(os.getcwd(), diffsinger_url.split("/")[-1])  # current scripts dir to avoid issues
         diffsinger_script_folder_name = "DiffSinger-main"
 
-        vocoder_url = "https://github.com/openvpi/vocoders/releases/download/nsf-hifigan-v1/nsf_hifigan_20221211.zip"
+        vocoder_url = "https://github.com/openvpi/vocoders/releases/download/nsf-hifigan-44.1k-hop512-128bin-2024.02/nsf_hifigan_44.1k_hop512_128bin_2024.02.zip"
         vocoder_zip = os.path.join(os.getcwd(), vocoder_url.split("/")[-1])  # current scripts dir to avoid issues
         vocoder_folder = "DiffSinger/checkpoints"
+        vocoder_subfolder_name = "Diffsinger/checkpoints/nsf_hifigan_44.1k_hop512_128bin_2024.02"
 
 
         if os.path.exists("nnsvs-db-converter") or os.path.exists("DiffSinger"):
-            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them?")
+            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them? Make sure any user files are backed up OUTSIDE of the Diffsinger folder.")
             if not user_response:
                 return
 
@@ -288,7 +304,7 @@ class App(tk.Tk):
         response = requests.get(vocoder_url, stream = True)
         total_size = int(response.headers.get("content-length", 0))
         with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading NSF-HifiGAN") as progress_bar:
-            with open("nsf_hifigan_20221211.zip", "wb") as f:
+            with open("nsf_hifigan_44.1k_hop512_128bin_2024.02.zip", "wb") as f:
                 for chunk in response.iter_content(chunk_size = 1024):
                     if chunk:
                         f.write(chunk)
@@ -296,6 +312,8 @@ class App(tk.Tk):
         with zipfile.ZipFile(vocoder_zip, "r") as zip_ref:
             zip_ref.extractall(vocoder_folder)
         os.remove(vocoder_zip)
+        if os.path.exists(vocoder_subfolder_name):
+            os.rename(vocoder_subfolder_name, "Diffsinger/checkpoints/nsf_hifigan")
 
         subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
         subprocess.check_call(["pip", "install", "torch==1.13.0"])
@@ -311,7 +329,7 @@ class App(tk.Tk):
             "use_cents": True,
             "time_step": 0.005,
             "f0_min": 40,
-            "f0_max": 1100,
+            "f0_max": 1200,
             "audio_sample_rate": 44100,
             "voicing_treshold_midi": 0.45,
             "voicing_treshold_breath": 0.6,
@@ -328,6 +346,216 @@ class App(tk.Tk):
 
         print("Setup Complete!")
 
+    def dl_scripts_github2(self):
+        if not os.path.exists(all_shits_not_wav_n_lab):
+          os.makedirs(all_shits_not_wav_n_lab)
+        uta_url = "https://github.com/UtaUtaUtau/nnsvs-db-converter/archive/refs/heads/main.zip"
+        uta_zip = os.path.join(os.getcwd(), uta_url.split("/")[-1])  # current scripts dir to avoid issues
+        uta_script_folder_name = "nnsvs-db-converter-main"
+
+        diffsinger_url = "https://github.com/openvpi/DiffSinger/archive/refs/heads/main.zip"
+        diffsinger_zip = os.path.join(os.getcwd(), diffsinger_url.split("/")[-1])  # current scripts dir to avoid issues
+        diffsinger_script_folder_name = "DiffSinger-main"
+
+        vocoder_url = "https://github.com/openvpi/vocoders/releases/download/nsf-hifigan-44.1k-hop512-128bin-2024.02/nsf_hifigan_44.1k_hop512_128bin_2024.02.zip"
+        vocoder_zip = os.path.join(os.getcwd(), vocoder_url.split("/")[-1])  # current scripts dir to avoid issues
+        vocoder_folder = "DiffSinger/checkpoints"
+        vocoder_subfolder_name = "Diffsinger/checkpoints/nsf_hifigan_44.1k_hop512_128bin_2024.02"
+
+
+        if os.path.exists("nnsvs-db-converter") or os.path.exists("DiffSinger"):
+            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them? Make sure any user files are backed up OUTSIDE of the Diffsinger folder.")
+            if not user_response:
+                return
+
+            if os.path.exists("nnsvs-db-converter"):
+                try:
+                    shutil.rmtree("nnsvs-db-converter")
+                except Exception as e:
+                    print(f"Error deleting the existing 'nnsvs-db-converter' folder: {e}")
+
+            if os.path.exists("DiffSinger"):
+                try:
+                    shutil.rmtree("DiffSinger")
+                except Exception as e:
+                    print(f"Error deleting the existing 'DiffSinger' folder: {e}")
+
+        response = requests.get(uta_url, stream = True)
+        total_size = int(response.headers.get("content-length", 0))
+        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading nnsvs-db-converter") as progress_bar:
+            with open("main.zip", "wb") as f:
+                for chunk in response.iter_content(chunk_size = 1024):
+                    if chunk:
+                        f.write(chunk)
+                        progress_bar.update(len(chunk))
+
+        with zipfile.ZipFile(uta_zip, "r") as zip_ref:
+            zip_ref.extractall()
+        os.remove(uta_zip)
+        if os.path.exists(uta_script_folder_name):
+            os.rename(uta_script_folder_name, "nnsvs-db-converter") #renaming stuff cus i dont wanna change my path from the nb much
+
+        response = requests.get(diffsinger_url, stream = True)
+        total_size = int(response.headers.get("content-length", 0))
+        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading DiffSinger") as progress_bar:
+            with open("main.zip", "wb") as f:
+                for chunk in response.iter_content(chunk_size = 1024):
+                    if chunk:
+                        f.write(chunk)
+                        progress_bar.update(len(chunk))
+
+        with zipfile.ZipFile(diffsinger_zip, "r") as zip_ref:
+            zip_ref.extractall()
+        os.remove(diffsinger_zip)
+        if os.path.exists(diffsinger_script_folder_name):
+            os.rename(diffsinger_script_folder_name, "DiffSinger") #this beech too
+
+        response = requests.get(vocoder_url, stream = True)
+        total_size = int(response.headers.get("content-length", 0))
+        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading NSF-HifiGAN") as progress_bar:
+            with open("nsf_hifigan_44.1k_hop512_128bin_2024.02.zip", "wb") as f:
+                for chunk in response.iter_content(chunk_size = 1024):
+                    if chunk:
+                        f.write(chunk)
+                        progress_bar.update(len(chunk))
+        with zipfile.ZipFile(vocoder_zip, "r") as zip_ref:
+            zip_ref.extractall(vocoder_folder)
+        os.remove(vocoder_zip)
+        if os.path.exists(vocoder_subfolder_name):
+            os.rename(vocoder_subfolder_name, "Diffsinger/checkpoints/nsf_hifigan")
+        
+
+        subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
+        subprocess.check_call(["pip", "install", "torch==1.13.1+cu117", "torchvision==0.14.1+cu117", "torchaudio==0.13.1", "--extra-index-url", "https://download.pytorch.org/whl/cu117"])
+        subprocess.check_call(["pip", "install", "protobuf"])
+        subprocess.check_call(["pip", "install", "onnxruntime"])
+
+        if os.path.exists("db_converter_config.yaml"):
+            os.remove("db_converter_config.yaml")
+
+        converter_config = {
+            "use_cents": True,
+            "time_step": 0.005,
+            "f0_min": 40,
+            "f0_max": 1200,
+            "audio_sample_rate": 44100,
+            "voicing_treshold_midi": 0.45,
+            "voicing_treshold_breath": 0.6,
+            "breath_window_size": 0.05,
+            "breath_min_length": 0.1,
+            "breath_db_threshold": -60,
+            "breath_centroid_treshold": 2000,
+            "max-length-relaxation-factor": 0.1,
+            "pitch-extractor": "parselmouth",
+            "write_label": "htk"
+        }
+        with open("db_converter_config.yaml", "w") as config:
+            yaml.dump(converter_config, config)
+
+        print("Setup Complete!")
+
+    def dl_update(self):
+        if not os.path.exists(all_shits_not_wav_n_lab):
+          os.makedirs(all_shits_not_wav_n_lab)
+        uta_url = "https://github.com/UtaUtaUtau/nnsvs-db-converter/archive/refs/heads/main.zip"
+        uta_zip = os.path.join(os.getcwd(), uta_url.split("/")[-1])  # current scripts dir to avoid issues
+        uta_script_folder_name = "nnsvs-db-converter-main"
+
+        diffsinger_url = "https://github.com/openvpi/DiffSinger/archive/refs/heads/main.zip"
+        diffsinger_zip = os.path.join(os.getcwd(), diffsinger_url.split("/")[-1])  # current scripts dir to avoid issues
+        diffsinger_script_folder_name = "DiffSinger-main"
+
+        vocoder_url = "https://github.com/openvpi/vocoders/releases/download/nsf-hifigan-44.1k-hop512-128bin-2024.02/nsf_hifigan_44.1k_hop512_128bin_2024.02.zip"
+        vocoder_zip = os.path.join(os.getcwd(), vocoder_url.split("/")[-1])  # current scripts dir to avoid issues
+        vocoder_folder = "DiffSinger/checkpoints"
+        vocoder_subfolder_name = "Diffsinger/checkpoints/nsf_hifigan_44.1k_hop512_128bin_2024.02"
+
+
+        if os.path.exists("nnsvs-db-converter") or os.path.exists("DiffSinger"):
+            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them? Make sure any user files are backed up OUTSIDE of the Diffsinger folder.")
+            if not user_response:
+                return
+
+            if os.path.exists("nnsvs-db-converter"):
+                try:
+                    shutil.rmtree("nnsvs-db-converter")
+                except Exception as e:
+                    print(f"Error deleting the existing 'nnsvs-db-converter' folder: {e}")
+
+            if os.path.exists("DiffSinger"):
+                try:
+                    shutil.rmtree("DiffSinger")
+                except Exception as e:
+                    print(f"Error deleting the existing 'DiffSinger' folder: {e}")
+
+        response = requests.get(uta_url, stream = True)
+        total_size = int(response.headers.get("content-length", 0))
+        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading nnsvs-db-converter") as progress_bar:
+            with open("main.zip", "wb") as f:
+                for chunk in response.iter_content(chunk_size = 1024):
+                    if chunk:
+                        f.write(chunk)
+                        progress_bar.update(len(chunk))
+
+        with zipfile.ZipFile(uta_zip, "r") as zip_ref:
+            zip_ref.extractall()
+        os.remove(uta_zip)
+        if os.path.exists(uta_script_folder_name):
+            os.rename(uta_script_folder_name, "nnsvs-db-converter") #renaming stuff cus i dont wanna change my path from the nb much
+
+        response = requests.get(diffsinger_url, stream = True)
+        total_size = int(response.headers.get("content-length", 0))
+        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading DiffSinger") as progress_bar:
+            with open("main.zip", "wb") as f:
+                for chunk in response.iter_content(chunk_size = 1024):
+                    if chunk:
+                        f.write(chunk)
+                        progress_bar.update(len(chunk))
+
+        with zipfile.ZipFile(diffsinger_zip, "r") as zip_ref:
+            zip_ref.extractall()
+        os.remove(diffsinger_zip)
+        if os.path.exists(diffsinger_script_folder_name):
+            os.rename(diffsinger_script_folder_name, "DiffSinger") #this beech too
+
+        response = requests.get(vocoder_url, stream = True)
+        total_size = int(response.headers.get("content-length", 0))
+        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading NSF-HifiGAN") as progress_bar:
+            with open("nsf_hifigan_44.1k_hop512_128bin_2024.02.zip", "wb") as f:
+                for chunk in response.iter_content(chunk_size = 1024):
+                    if chunk:
+                        f.write(chunk)
+                        progress_bar.update(len(chunk))
+        with zipfile.ZipFile(vocoder_zip, "r") as zip_ref:
+            zip_ref.extractall(vocoder_folder)
+        os.remove(vocoder_zip)
+        if os.path.exists(vocoder_subfolder_name):
+            os.rename(vocoder_subfolder_name, "Diffsinger/checkpoints/nsf_hifigan")
+
+
+        if os.path.exists("db_converter_config.yaml"):
+            os.remove("db_converter_config.yaml")
+
+        converter_config = {
+            "use_cents": True,
+            "time_step": 0.005,
+            "f0_min": 40,
+            "f0_max": 1200,
+            "audio_sample_rate": 44100,
+            "voicing_treshold_midi": 0.45,
+            "voicing_treshold_breath": 0.6,
+            "breath_window_size": 0.05,
+            "breath_min_length": 0.1,
+            "breath_db_threshold": -60,
+            "breath_centroid_treshold": 2000,
+            "max-length-relaxation-factor": 0.1,
+            "pitch-extractor": "parselmouth",
+            "write_label": "htk"
+        }
+        with open("db_converter_config.yaml", "w") as config:
+            yaml.dump(converter_config, config)
+
+        print("Setup Complete!")
 
     def grab_raw_data(self):
         self.all_shits = filedialog.askdirectory(title="Select raw data folder", initialdir = "raw_data")
@@ -615,7 +843,7 @@ class App(tk.Tk):
         enable_stretch_aug = stretchaug.get()
         energy = train_energy.get()
         pitch = train_pitch.get()
-        breath = train_bre.get()
+        tension = train_ten.get()
         duration = train_dur.get()
         shallow = shallow_diff.get()
         save_interval = save_int.get()
@@ -644,7 +872,8 @@ class App(tk.Tk):
             #sounds like a lot of users can go higher but 9 is a good start(Aster)
             bitch_ass_config["val_check_interval"] = int(save_interval)
             bitch_ass_config["use_energy_embed"] = energy
-            bitch_ass_config["use_breathiness_embed"] = breath
+            bitch_ass_config["use_breathiness_embed"] = energy
+            bitch_ass_config["use_tension_embed"] = tension
             #shallow diff stuff
             bitch_ass_config["use_shallow_diffusion"] = shallow
             bitch_ass_config["shallow_diffusion_args"]["val_gt_start"] = shallow
@@ -710,11 +939,39 @@ class App(tk.Tk):
         os.environ["PYTHONPATH"] = "."
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
         if not configpath or not ckpt_save_dir:
-            self.label.config(text="Please select your config and the data you would like to preprocess first!")
+            self.label.config(text="Please select your config and the data you would like to train first!")
             return
         subprocess.check_call(['python', 'scripts/train.py', '--config', configpath, '--exp_name', ckpt_save_dir, '--reset'])
 
+    def onnx_folder_save(self):
+        global onnx_folder_dir
+        onnx_folder_dir = filedialog.askdirectory(title="Select onnx export folder", initialdir = "DiffSinger")
+        print("export path: " + onnx_folder_dir)
 
+    def run_onnx_export(self):
+        os.chdir("DiffSinger")
+        os.environ["PYTHONPATH"] = "."
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+        if not onnx_folder_dir or not ckpt_save_dir:
+            self.label.config(text="Please select your config and the data you would like to preprocess first!")
+            return
+        export_check = expselect.get()
+        cmd = ['python', 'scripts/export.py']
+        if export_check == "acoustic":
+            print("exporting acoustic...")
+            cmd.append('acoustic')
+        elif export_check == "variance":
+            print("exporting variance...")
+            cmd.append('variance')
+        else:
+            messagebox.showinfo("Required", "Please select a config type")
+            return
+        cmd.append(['--exp', ckpt_save_dir, '--out', onnx_folder_dir])
+        streeng = ' '.join([str(cmd)])
+        print(streeng)
+        output = subprocess.check_output(streeng, universal_newlines=True)
+        print(output)
+        os.chdir(main_path)
 if __name__ == "__main__":
     app = App()
     app.mainloop()
