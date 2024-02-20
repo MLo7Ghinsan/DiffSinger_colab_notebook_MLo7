@@ -895,7 +895,7 @@ class App(tk.Tk):
             bitch_ass_config["max_batch_size"] = int(batch) #ive never tried reaching the limit so ill trust kei's setting for this
             bitch_ass_config["val_check_interval"] = int(save_interval)
             bitch_ass_config["predict_energy"] = energy
-            bitch_ass_config["predict_breathiness"] = breath
+            bitch_ass_config["predict_breathiness"] = energy
             bitch_ass_config["predict_pitch"] = pitch
             bitch_ass_config["predict_dur"] = duration
             with open("DiffSinger/configs/variance.yaml", "w") as config:
