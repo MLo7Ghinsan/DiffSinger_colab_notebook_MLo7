@@ -902,10 +902,10 @@ class App(tk.Tk):
                 yaml.dump(bitch_ass_config, config)
             print("wrote variance config!")
 
-        new_f0_max = 1600
+        new_f0_max=1600
         with open("DiffSinger/utils/binarizer_utils.py", "r") as f:
             f0_read = f.read()
-        up_f0_val = re.sub(r"f0_max\s*=\s*.*", f"f0_max = {new_f0_max}", f0_read)
+        up_f0_val = re.sub(r"f0_max\s*=\s*.*", f"f0_max={new_f0_max}", f0_read)
         with open("DiffSinger/utils/binarizer_utils.py", "w") as f:
             f.write(up_f0_val)
 
