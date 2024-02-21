@@ -1,12 +1,12 @@
+___
+## DiffSinger training notebook: <a href="https://colab.research.google.com/github/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/DiffSinger_colab_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
+
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
-- ds + wav (DiffSinger format)
+- ds (DiffSinger .ds file)
 
-## Access the notebook here: <a href="https://colab.research.google.com/github/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/DiffSinger_colab_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
-___
-
-#### IMPORTANT NOTE:
+#### NOTE:
 
 - your_speaker_folder's folder name will be used as *spk_name* so please be careful about your file naming
 - colab notebook primarily uses python; thus space in file name or folder path may be invalid
@@ -100,9 +100,44 @@ your_zip.zip:
 
 ___
 
+## Vocoder finetuning notebook: <a href="https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/NSF_hifigan_finetuning_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
+
+### current supported data format:
+- wav
+
+#### NOTE:
+
+- it is suggested to use manual segmented audio for cleaner segments (though there's minimal difference when using the auto segmentation)
+- zip file format can consist of any type of files, even subfolders. data extraction will only account .wav that are within the zip into the training set
+___
+
+## SOFA training notebook (wip): <a href="https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/SOFA_Notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
+
+### current supported data format:
+- lab + wav (NNSVS format)
+
+#### NOTE:
+
+- this notebook is still a rough draft, please either don't use it at all or use it with caution....
+
+___
+## MFA inference notebook: <a href="https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/lab_base_maker_AutoLabelingForSVS.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
+
+### current supported data format:
+- wav
+- txt + wav (wav with text transcription)
+- lab + wav (wav with text transcription)
+
+#### NOTE:
+
+- this notebook is the alternative force alignment option, but SOFA should works better on singing data
+- zip must have no subfolders
+___
+
 #### Plans (update might not be in order):
 
-- [notebook] improve SOFA notebook
+- [notebook] improve SOFA notebook, add inference
+- [notebook] update NSF hifigan finetuning notebook
 
 ___
 
