@@ -166,11 +166,11 @@ class App(tk.Tk):
         tab3.pit_check.grid(row = 8, column = 0)
         global train_pitch
         train_pitch = self.train_pit_var
-        self.train_dur_var = tk.BooleanVar()
-        tab3.dur_check = ttk.Checkbutton(tab3, text = "Train duration", variable = self.train_dur_var)
-        tab3.dur_check.grid(row = 8, column = 1)
-        global train_dur
-        train_dur = self.train_dur_var
+        self.train_voicing_var = tk.BooleanVar()
+        tab3.voicing_check = ttk.Checkbutton(tab3, text = "Train voicing", variable = self.train_voicing_var)
+        tab3.voicing_check.grid(row = 8, column = 1)
+        global train_voicing
+        train_voicing = self.train_voicing_var
 
         tab3.label = ttk.Label(tab3, text = "-------------------------------------------------------------------------------").grid(row = 9, column = 0, columnspan = 2, padx = 50, pady = 5)
 
@@ -213,7 +213,7 @@ class App(tk.Tk):
         ttk.Button(tab4, text = "Select config", command = self.load_config_function).grid(row = 0, column = 0, padx = (175, 100), pady = (50, 50))
         ttk.Button(tab4, text = "Select save folder", command = self.ckpt_folder_save).grid(row = 0, column = 1, padx = (100, 175), pady = (50, 50))
         ttk.Button(tab4, text = "Train!", command = self.train_function).grid(row = 1, column = 0, columnspan = 2)
-        ttk.Label(tab4, text = "This window will not respond during training.").grid(row = 2, column = 0, columnspan = 2, pady = (50, 5))
+        ttk.Label(tab4, text = "This window will not respond voicinging training.").grid(row = 2, column = 0, columnspan = 2, pady = (50, 5))
         ttk.Label(tab4, text = "To stop training, press Ctrl+C in the command line window.").grid(row = 3, column = 0, columnspan = 2, pady = 5)
         
         #EXPORT TAB
@@ -312,8 +312,6 @@ class App(tk.Tk):
         with zipfile.ZipFile(vocoder_zip, "r") as zip_ref:
             zip_ref.extractall(vocoder_folder)
         os.remove(vocoder_zip)
-        if os.path.exists(vocoder_subfolder_name):
-            os.rename(vocoder_subfolder_name, "Diffsinger/checkpoints/nsf_hifigan")
 
         subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
         subprocess.check_call(["pip", "install", "torch==1.13.0"])
@@ -421,9 +419,6 @@ class App(tk.Tk):
         with zipfile.ZipFile(vocoder_zip, "r") as zip_ref:
             zip_ref.extractall(vocoder_folder)
         os.remove(vocoder_zip)
-        if os.path.exists(vocoder_subfolder_name):
-            os.rename(vocoder_subfolder_name, "Diffsinger/checkpoints/nsf_hifigan")
-        
 
         subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
         subprocess.check_call(["pip", "install", "torch==1.13.1+cu117", "torchvision==0.14.1+cu117", "torchaudio==0.13.1", "--extra-index-url", "https://download.pytorch.org/whl/cu117"])
@@ -529,9 +524,6 @@ class App(tk.Tk):
         with zipfile.ZipFile(vocoder_zip, "r") as zip_ref:
             zip_ref.extractall(vocoder_folder)
         os.remove(vocoder_zip)
-        if os.path.exists(vocoder_subfolder_name):
-            os.rename(vocoder_subfolder_name, "Diffsinger/checkpoints/nsf_hifigan")
-
 
         if os.path.exists("db_converter_config.yaml"):
             os.remove("db_converter_config.yaml")
@@ -844,7 +836,7 @@ class App(tk.Tk):
         energy = train_energy.get()
         pitch = train_pitch.get()
         tension = train_ten.get()
-        duration = train_dur.get()
+        voicing = train_voicing.get()
         shallow = shallow_diff.get()
         save_interval = save_int.get()
         batch = batch_size.get()
@@ -874,6 +866,7 @@ class App(tk.Tk):
             bitch_ass_config["use_energy_embed"] = energy
             bitch_ass_config["use_breathiness_embed"] = energy
             bitch_ass_config["use_tension_embed"] = tension
+            bitch_ass_config["use_voicing_embed"] = voicing
             #shallow diff stuff
             bitch_ass_config["use_shallow_diffusion"] = shallow
             bitch_ass_config["shallow_diffusion_args"]["val_gt_start"] = shallow
@@ -897,7 +890,8 @@ class App(tk.Tk):
             bitch_ass_config["predict_energy"] = energy
             bitch_ass_config["predict_breathiness"] = energy
             bitch_ass_config["predict_pitch"] = pitch
-            bitch_ass_config["predict_dur"] = duration
+            bitch_ass_config["predict_tension"] = tension
+            bitch_ass_config["predict_voicing"] = voicing
             with open("DiffSinger/configs/variance.yaml", "w") as config:
                 yaml.dump(bitch_ass_config, config)
             print("wrote variance config!")
