@@ -60,7 +60,7 @@ class App(tk.Tk):
         tab1.label.pack(side = "top", pady = (200, 0))
         tab1.label = ttk.Label(tab1, text ="by MLo7 & AgentAsteriski")
         tab1.label.pack()
-        tab1.label = ttk.Label(tab1, text ="updated 2/19/24", font = "Bahnschrift 10")
+        tab1.label = ttk.Label(tab1, text ="updated 2/27/24", font = "Bahnschrift 10")
         tab1.label.pack()
         tab1.button = ttk.Button(tab1, text="Full download(no CUDA)", command=self.dl_scripts_github)
         tab1.button.pack()
@@ -791,6 +791,7 @@ class App(tk.Tk):
             singer_type = "SINGLE-SPEAKER"
             diff_loss_type = "l2"
             f0_emb = "continuous"
+            f0_maxx = "1600"
             use_spk_id = False
             all_wav_files = []
             for root, dirs, files in os.walk(self.data_folder):
@@ -805,7 +806,8 @@ class App(tk.Tk):
         else:
             singer_type = "MULTI-SPEAKER"
             diff_loss_type = "l1"
-            f0_emb = "discrete"
+            f0_emb = "continuous"
+            f0_maxx = "1600"
             use_spk_id = True
             folder_to_id = {folder_name: i for i, folder_name in enumerate(spk_name)}
             random_ass_test_files = []
@@ -852,6 +854,7 @@ class App(tk.Tk):
             #bitch_ass_config["spk_ids"] = spk_id
             bitch_ass_config["diff_loss_type"] = diff_loss_type
             bitch_ass_config["f0_embed_type"] = f0_emb
+            bitch_ass_config["f0_max"] = f0_maxx
             bitch_ass_config["binary_data_dir"] = self.binary_save_dir
             bitch_ass_config["dictionary"] = "dictionaries/custom_dict.txt"
             bitch_ass_config["augmentation_args"]["fixed_pitch_shifting"]["enabled"] = enable_fixed_aug
@@ -883,6 +886,7 @@ class App(tk.Tk):
             bitch_ass_config["num_spk"] = num_spk
             bitch_ass_config["use_spk_id"] = use_spk_id
             bitch_ass_config["diff_loss_type"] = diff_loss_type
+            bitch_ass_config["f0_max"] = f0_maxx
             bitch_ass_config["binary_data_dir"] = self.binary_save_dir
             bitch_ass_config["dictionary"] = "dictionaries/custom_dict.txt"
             bitch_ass_config["max_batch_size"] = int(batch) #ive never tried reaching the limit so ill trust kei's setting for this
@@ -892,6 +896,7 @@ class App(tk.Tk):
             bitch_ass_config["predict_pitch"] = pitch
             bitch_ass_config["predict_tension"] = tension
             bitch_ass_config["predict_voicing"] = voicing
+            bitch_ass_config["use_melody_encoder"] = pitch
             with open("DiffSinger/configs/variance.yaml", "w") as config:
                 yaml.dump(bitch_ass_config, config)
             print("wrote variance config!")
