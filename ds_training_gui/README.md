@@ -12,7 +12,7 @@ ___
 ### how to use:
 
 1. run setup_gui.bat ***The GUI will not launch without its dependencies***
-2. 2. run run_gui.bat
+2. run run_gui.bat
 
 setup_gui.bat only needed to be executed once since it's only for installing dependencies
 so just run run_gui.bat if you already have all the dependencies
