@@ -137,7 +137,7 @@ ___
 #### Plans (update might not be in order):
 
 - [notebook] improve SOFA notebook, add inference
-- [notebook] update NSF hifigan finetuning notebook
+- [notebook] REMOVE MFA inference notebook (migrate to SOFA or something)
 
 ___
 
