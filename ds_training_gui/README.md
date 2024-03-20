@@ -25,12 +25,16 @@ ___
 ___
 
 ### known issues & quirks:
-- download dependencies does not detect cuda for torch version, cuda users please ~~reinstall torch with cuda from command line~~ use the (yes CUDA) download option
+- export onnx will create a backup of the previous version, but fails if there's already a backup copy
   
-- after editing configs or preprocessing, the gui develops amnesia and forgets where it is. relaunch
+- training individual parameters is not currently compatible with OU VB builder
 ___
 
 ### intended future additions:
-- onnx exports and set up for use in openutau
+- ~~onnx exports and set up for use in openutau~~
   
 - ~~button to update only diffsinger and db converter files~~
+
+- full redesign in customtkinter
+
+- default dsdicts
