@@ -2,6 +2,7 @@ import zipfile, shutil, csv, json, yaml, random, subprocess, os, requests, re
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, Menu
 from tqdm import tqdm
+from contextlib import contextmanager
 
 class App(tk.Tk):
     def __init__(self):
@@ -29,6 +30,7 @@ class App(tk.Tk):
         style.configure("TCombobox", darkcolor = "gray18", bordercolor = "gray18", focusfill = "gray18", fieldbackground = "gray18", insertcolor = "gray18", selectbackground="gray18", selectforeground="cyan3", background="gray18", foreground="cyan3")
         self.create_widgets()
 
+        global main_path
         main_path = os.getcwd()
         os.chdir(main_path)
 
@@ -36,6 +38,8 @@ class App(tk.Tk):
         self.data_folder = None #more forces
         self.ckpt_save_dir = None #even more forces
         self.trainselect_option = None #rawr
+        self.vocoder_onnx = None #actually this one isn't forcing anything none is fine
+
 
     def create_widgets(self):
 
@@ -60,7 +64,7 @@ class App(tk.Tk):
         tab1.label.pack(side = "top", pady = (200, 0))
         tab1.label = ttk.Label(tab1, text ="by MLo7 & AgentAsteriski")
         tab1.label.pack()
-        tab1.label = ttk.Label(tab1, text ="updated 2/27/24", font = "Bahnschrift 10")
+        tab1.label = ttk.Label(tab1, text ="updated 3/19/24", font = "Bahnschrift 10")
         tab1.label.pack()
         tab1.button = ttk.Button(tab1, text="Full download(no CUDA)", command=self.dl_scripts_github)
         tab1.button.pack()
@@ -213,25 +217,32 @@ class App(tk.Tk):
         ttk.Button(tab4, text = "Select config", command = self.load_config_function).grid(row = 0, column = 0, padx = (175, 100), pady = (50, 50))
         ttk.Button(tab4, text = "Select save folder", command = self.ckpt_folder_save).grid(row = 0, column = 1, padx = (100, 175), pady = (50, 50))
         ttk.Button(tab4, text = "Train!", command = self.train_function).grid(row = 1, column = 0, columnspan = 2)
-        ttk.Label(tab4, text = "This window will not respond voicinging training.").grid(row = 2, column = 0, columnspan = 2, pady = (50, 5))
+        ttk.Label(tab4, text = "This window will not respond during training.").grid(row = 2, column = 0, columnspan = 2, pady = (50, 5))
         ttk.Label(tab4, text = "To stop training, press Ctrl+C in the command line window.").grid(row = 3, column = 0, columnspan = 2, pady = 5)
         
         #EXPORT TAB
         self.expselect_option = tk.StringVar()
         tab5.option1 = ttk.Radiobutton(tab5, text="Acoustic", variable=self.expselect_option, value="acoustic")
-        tab5.option1.grid(row = 1, column = 0, padx = (50, 0), pady = (10, 0))
+        tab5.option1.grid(row = 0, column = 0, padx = (100, 0), pady = (10, 0))
         tab5.option2 = ttk.Radiobutton(tab5, text="Variance", variable=self.expselect_option, value="variance")
-        tab5.option2.grid(row = 1, column = 1, pady = (10, 0))
+        tab5.option2.grid(row = 1, column = 0, padx = (100, 0))
         global expselect
         expselect = self.expselect_option
-        ttk.Button(tab5, text = "Select checkpoint folder", command = self.ckpt_folder_save).grid(row = 1, column = 2, columnspan = 2, padx = (50, 0), pady = (10, 0))
-        ttk.Button(tab5, text = "Select export folder", command = self.onnx_folder_save).grid(row = 1, column = 4, columnspan = 2, padx = (50, 0), pady = (10, 0))
+        ttk.Button(tab5, text = "Select checkpoint folder", command = self.ckpt_folder_save).grid(row = 0, rowspan = 2, column = 2, padx = (30, 20), pady = (10, 0))
         global onnx_folder
         onnx_folder = self.onnx_folder_save
-        ttk.Button(tab5, text = "Export onnx", command = self.run_onnx_export).grid(row = 2, column = 2, columnspan = 3, pady = (10, 0))
-        ttk.Label(tab5, text = "THIS TAB DOESN'T WORK YET").grid(row = 3, column = 1, padx = 10, pady = 10)
-
-
+        ttk.Button(tab5, text = "Export onnx", command = self.run_onnx_export).grid(row = 0, rowspan = 2, column = 3, padx = (50, 0), pady = (10, 0))
+        ttk.Button(tab5, text = "TEMPORARY PATCH BUTTON", command = self.dl_ou_patch).grid(row = 3, column = 1, columnspan = 4, padx = 10, pady = 30)
+        ttk.Button(tab5, text = "Select acoustic folder", command = self.get_aco_folder).grid(row = 4, column = 1, columnspan = 2, padx = (0, 20), pady = (10, 0))
+        ttk.Button(tab5, text = "Select variance folder", command = self.get_var_folder).grid(row = 4, column = 3, columnspan = 2, pady = (10, 0))
+        global ou_name_var
+        ou_name_var = tk.StringVar()
+        tab5.batch_box = ttk.Entry(tab5, textvariable = ou_name_var, width = 25)
+        tab5.batch_box.insert(0, "Enter singer name")
+        tab5.batch_box.grid(row = 6, column = 1, columnspan = 2, pady = (10, 0))
+        ttk.Button(tab5, text = "Select save location", command = self.get_OU_folder).grid(row = 6, column = 3, columnspan = 2, pady = (10, 0))
+        ttk.Button(tab5, text = "OPTIONAL: custom vocoder", command = self.get_vocoder).grid(row = 7, column = 1, columnspan = 2, pady = (10, 0))
+        ttk.Button(tab5, text = "Build OU Voicebank", command = self.run_OU_config).grid(row = 7, column = 3, columnspan = 2, pady = (10, 0))
 
     ##FINAL COMMANDS
     global all_shits_not_wav_n_lab
@@ -791,7 +802,7 @@ class App(tk.Tk):
             singer_type = "SINGLE-SPEAKER"
             diff_loss_type = "l2"
             f0_emb = "continuous"
-            f0_maxx = "1600"
+            f0_maxx = 1600
             use_spk_id = False
             all_wav_files = []
             for root, dirs, files in os.walk(self.data_folder):
@@ -807,7 +818,7 @@ class App(tk.Tk):
             singer_type = "MULTI-SPEAKER"
             diff_loss_type = "l1"
             f0_emb = "continuous"
-            f0_maxx = "1600"
+            f0_maxx = 1600
             use_spk_id = True
             folder_to_id = {folder_name: i for i, folder_name in enumerate(spk_name)}
             random_ass_test_files = []
@@ -911,7 +922,7 @@ class App(tk.Tk):
     def binarize(self):
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
-        os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
         config_check = trainselect.get()
         cmd = ['python', 'scripts/binarize.py', '--config']
         if config_check == "Acoustic Training":
@@ -951,26 +962,117 @@ class App(tk.Tk):
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
-        if not onnx_folder_dir or not ckpt_save_dir:
-            self.label.config(text="Please select your config and the data you would like to preprocess first!")
+        if not ckpt_save_dir:
+            self.label.config(text="Please select your config and the checkpoint you would like to export first!")
             return
         export_check = expselect.get()
+        ckpt_main = "Diffsinger\checkpoints"
+        ckpt_dir_rel = os.path.relpath(ckpt_save_dir, ckpt_main)
+        ckpt_dir_short = ckpt_dir_rel.lstrip("..\checkpoints\\")
+        print(ckpt_dir_rel)
+        print(ckpt_dir_short)
+        onnx_folder_dir = ckpt_save_dir + "/onnx"
+        print(onnx_folder_dir)
+        if os.path.exists(onnx_folder_dir):
+            onnx_bak = ckpt_save_dir + "/onnx_old"
+            os.rename(onnx_folder_dir, onnx_bak)
+            print("backing up existing onnx folder...")
         cmd = ['python', 'scripts/export.py']
         if export_check == "acoustic":
             print("exporting acoustic...")
             cmd.append('acoustic')
+            cmd.append('--exp')
+            cmd.append(ckpt_dir_short)
+            cmd.append('--out')
+            cmd.append(onnx_folder_dir)
         elif export_check == "variance":
             print("exporting variance...")
             cmd.append('variance')
+            cmd.append('--exp')
+            cmd.append(ckpt_dir_short)
+            cmd.append('--out')
+            cmd.append(onnx_folder_dir)
         else:
             messagebox.showinfo("Required", "Please select a config type")
             return
-        cmd.append(['--exp', ckpt_save_dir, '--out', onnx_folder_dir])
-        streeng = ' '.join([str(cmd)])
-        print(streeng)
-        output = subprocess.check_output(streeng, universal_newlines=True)
-        print(output)
+        print(' '.join(cmd))
+        subprocess.check_call(cmd)
+        print("Getting the files in order...")
+        prefix = os.path.basename(ckpt_save_dir)
+        os.chdir(onnx_folder_dir)
+        wronnx = prefix + ".onnx"
+        if os.path.exists(wronnx):
+            os.rename(wronnx, "acoustic.onnx")
+        nameList = os.listdir() 
+        for fileName in nameList:
+            rename=fileName.removeprefix(prefix + ".")
+            os.rename(fileName,rename)
+        print("Done!")
         os.chdir(main_path)
+
+    def dl_ou_patch(self):
+        patch_url = "https://github.com/agentasteriski/DiffSinger_colab_notebook_MLo7/releases/download/patches/temp_build_ou_vb.zip"
+        patch_zip = os.path.join(os.getcwd(), patch_url.split("/")[-1])  # ngl I don't actually know what this means but it worked for the setup
+        scripts_folder = "DiffSinger/scripts"
+
+        response = requests.get(patch_url, stream = True)
+        total_size = int(response.headers.get("content-length", 0))
+        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading build_ou_vb patch") as progress_bar:
+            with open("temp_build_ou_vb.zip", "wb") as f:
+                for chunk in response.iter_content(chunk_size = 1024):
+                    if chunk:
+                        f.write(chunk)
+                        progress_bar.update(len(chunk))
+        with zipfile.ZipFile(patch_zip, "r") as zip_ref:
+            zip_ref.extractall(scripts_folder)
+        os.remove(patch_zip)
+        
+
+    def get_aco_folder(self):
+        global aco_folder_dir
+        aco_folder_dir = filedialog.askdirectory(title="Select folder with acoustic checkpoints", initialdir = "DiffSinger/checkpoints/")
+        print("Acoustic folder: " + aco_folder_dir)
+        global aco_folder_onnx
+        aco_folder_onnx = aco_folder_dir + "/onnx"
+        global aco_config
+        aco_config = aco_folder_dir + "/config.yaml"
+
+    def get_var_folder(self):
+        var_folder_dir = filedialog.askdirectory(title="Select folder with variance checkpoints", initialdir = "DiffSinger/checkpoints/")
+        print("Variance folder: " + var_folder_dir)
+        global var_folder_onnx
+        var_folder_onnx = var_folder_dir + "/onnx"
+        global var_config
+        var_config = var_folder_dir + "/config.yaml"
+
+    def get_vocoder(self):
+        self.vocoder_onnx = filedialog.askopenfilename(title="OPTIONAL: Select custom vocoder onnx", initialdir="DiffSinger/checkpoints/", filetypes=[("ONNX files", "*.onnx")])
+        print("Custom vocoder:" + self.vocoder_onnx)
+
+    def get_OU_folder(self):
+        global ou_export_location
+        ou_export_location = filedialog.askdirectory(title="Select save folder")
+        print("export path: " + ou_export_location)
+
+    def run_OU_config(self):
+        os.chdir("DiffSinger")
+        os.environ["PYTHONPATH"] = "."
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+        ##if not aco_folder_dir or var_folder_dir:                             (for some reason this keeps tripping even if those variables are set)
+            ##self.label.config(text="Please select both onnx export folders!")
+            ##return
+        ou_name = ou_name_var.get()
+        dict_path = aco_folder_dir + "/dictionary.txt"
+        cmd = ['python', 'scripts/build_ou_vb.py', '--acoustic_onnx_folder', aco_folder_onnx, '--acoustic_config', aco_config, '--variance_onnx_folder', var_folder_onnx, '--variance_config', var_config, '--dictionary_path', dict_path, '--save_path', ou_export_location, '--name', ou_name]
+        if self.vocoder_onnx != None:
+            cmd.append('--vocoder_onnx_model')
+            cmd.append(self.vocoder_onnx)
+        else:
+            print("No custom vocoder")
+        print(' '.join(cmd))
+        subprocess.check_call(cmd)
+        os.chdir(main_path)
+        
 if __name__ == "__main__":
     app = App()
     app.mainloop()
