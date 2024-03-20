@@ -4,7 +4,7 @@ ___
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
-- ds (DiffSinger .ds file)
+- ds (DiffSinger .ds file) [not fully tested in colab]
 
 #### NOTE:
 
