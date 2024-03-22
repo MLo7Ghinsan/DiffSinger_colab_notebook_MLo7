@@ -4,6 +4,8 @@ from tkinter import ttk, filedialog, messagebox, Menu
 from tqdm import tqdm
 from contextlib import contextmanager
 
+main_path = os.getcwd()
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -30,8 +32,6 @@ class App(tk.Tk):
         style.configure("TCombobox", darkcolor = "gray18", bordercolor = "gray18", focusfill = "gray18", fieldbackground = "gray18", insertcolor = "gray18", selectbackground="gray18", selectforeground="cyan3", background="gray18", foreground="cyan3")
         self.create_widgets()
 
-        global main_path
-        main_path = os.getcwd()
         os.chdir(main_path)
 
         self.all_shits = None #forcing users to select the folder <3
@@ -39,7 +39,9 @@ class App(tk.Tk):
         self.ckpt_save_dir = None #even more forces
         self.trainselect_option = None #rawr
         self.vocoder_onnx = None #actually this one isn't forcing anything none is fine
-
+        
+    def on_tab_change(self, event):
+        os.chdir(main_path)
 
     def create_widgets(self):
 
@@ -59,6 +61,9 @@ class App(tk.Tk):
         tabControl.add(tab5, text ='Build OpenUtau Voicebank')
         tabControl.pack(expand = 1, fill ="both")
 
+        #change cd every time user change the tab <3
+        tabControl.bind("<<NotebookTabChanged>>", self.on_tab_change)
+        
         #ABOUT TAB
         tab1.label = ttk.Label(tab1, text ="DiffSinger Training GUI", font = "Bahnschrift 40 bold")
         tab1.label.pack(side = "top", pady = (200, 0))
