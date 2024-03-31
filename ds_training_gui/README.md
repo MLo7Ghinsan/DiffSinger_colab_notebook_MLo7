@@ -11,7 +11,7 @@ ___
 
 ### how to use:
 
-simply just run run_gui.bat after you installed or have puthon 3.10
+simply just run run_gui.bat after you installed or have pYthon 3.10
 ___
 
 ### notes:
