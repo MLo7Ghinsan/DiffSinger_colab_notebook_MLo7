@@ -929,9 +929,14 @@ class App(tk.Tk):
             f.write(up_f0_val)
 
     def binarize(self):
+        cuda = check_cuda()
+        if cuda:
+            cuda = "0"
+        else:
+            cuda = "-1"
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
-        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+        os.environ["CUDA_VISIBLE_DEVICES"] = cuda
         config_check = trainselect.get()
         cmd = ['python', 'scripts/binarize.py', '--config']
         if config_check == "Acoustic Training":
