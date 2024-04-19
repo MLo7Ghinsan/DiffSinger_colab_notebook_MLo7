@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, Menu
 from tqdm import tqdm
 from contextlib import contextmanager
+from check_cuda import check_cuda_availability
 
 main_path = os.getcwd()
 
@@ -951,9 +952,14 @@ class App(tk.Tk):
         print(configpath)
 
     def train_function(self):
+        cuda = check_cuda_availability()
+        if cuda:
+            cuda = "0"
+        else:
+            cuda = "-1"
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
-        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+        os.environ["CUDA_VISIBLE_DEVICES"] = cuda
         if not configpath or not ckpt_save_dir:
             self.label.config(text="Please select your config and the data you would like to train first!")
             return
