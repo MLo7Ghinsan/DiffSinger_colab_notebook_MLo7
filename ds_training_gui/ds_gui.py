@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, Menu
 from tqdm import tqdm
 from contextlib import contextmanager
-from check_cuda import check_cuda_availability
+from check_cuda import check_cuda
 
 main_path = os.getcwd()
 
