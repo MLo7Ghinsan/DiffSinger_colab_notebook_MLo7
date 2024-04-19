@@ -586,11 +586,11 @@ class App(tk.Tk):
             for filename in files:
                 if filename.endswith(".lab"):
                     file_path = os.path.join(root, filename)
-                    with open(file_path, "r") as file:
+                    with open(file_path, "r", encoding = "utf-8") as file:
                         file_data = file.read()
                     file_data = file_data.replace("SP", "pau")
                     file_data = file_data.replace("br", "AP") #it needs AP instead of br, but if users didnt label breath then whoop their lost
-                    with open(file_path, "w") as file:
+                    with open(file_path, "w", encoding = "utf-8") as file:
                         file.write(file_data)
         # for funny auto dict generator lmao
         print("generating dictionary from phonemes...")
@@ -606,7 +606,7 @@ class App(tk.Tk):
             for file in files:
                 if file.endswith(".lab"):
                     fpath = os.path.join(root, file)
-                    with open(fpath, "r") as lab_file:
+                    with open(fpath, "r", encoding = "utf-8") as lab_file:
                         for line in lab_file:
                             line = line.strip()
                             if line:
@@ -618,7 +618,7 @@ class App(tk.Tk):
             for file in files:
                 if file.endswith(".csv"):
                     fpath = os.path.join(root, file)
-                    with open(fpath, "r", newline="") as csv_file:
+                    with open(fpath, "r", newline="", encoding = "utf-8") as csv_file:
                         csv_reader = csv.DictReader(csv_file)
                         for row in csv_reader:
                             if "ph_seq" in row:
@@ -631,16 +631,16 @@ class App(tk.Tk):
             for file in files:
                 if file.endswith(".json"):
                     fpath = os.path.join(root, file)
-                    with open(fpath, "r") as json_file:
+                    with open(fpath, "r", encoding = "utf-8") as json_file:
                         row = json.load(json_file)
                         ph_seq = row["ph_seq"]
                         for phoneme in ph_seq.split():
                             if not is_excluded(phoneme):
                                 phonemes.add(phoneme)
 
-        with open(out, "w") as f:
+        with open(out, "w", encoding = "utf-8") as f:
             for phoneme in sorted(phonemes):
-                f.write(phoneme + "	" + phoneme + "\n")
+                f.write(phoneme + " " + phoneme + "\n")
 
         # for vowels and consonants.txt.... well adding luquid type for uta's script
         dict_path = out
@@ -650,7 +650,7 @@ class App(tk.Tk):
         consonant_data = []
         liquid_data = []
 
-        with open(dict_path, "r") as f:
+        with open(dict_path, "r", encoding = "utf-8") as f:
             for line in f:
                 phoneme, _ = line.strip().split("\t")
                 if phoneme[0] in vowel_types:
@@ -668,24 +668,24 @@ class App(tk.Tk):
         # make txt for language json file
         print("writing vowels.txt...")
         vowel_txt_path = os.path.join(directory, "vowels.txt")
-        with open(vowel_txt_path, "w") as f:
+        with open(vowel_txt_path, "w", encoding = "utf-8") as f:
             f.write(" ".join(vowel_data))
         print("writing liquids.txt...")
         liquid_txt_path = os.path.join(directory, "liquids.txt")
-        with open(liquid_txt_path, "w") as f:
+        with open(liquid_txt_path, "w", encoding = "utf-8") as f:
             f.write(" ".join(liquid_data))
         print("writing consonants.txt...")
         consonant_txt_path = os.path.join(directory, "consonants.txt")
-        with open(consonant_txt_path, "w") as f:
+        with open(consonant_txt_path, "w", encoding = "utf-8") as f:
             f.write(" ".join(consonant_data))
 
         # here's a funny json append
         print("appending lang.sample.json...")
-        with open(vowel_txt_path, "r") as f:
+        with open(vowel_txt_path, "r", encoding = "utf-8") as f:
             vowel_data = f.read().split()
-        with open(liquid_txt_path, "r") as f:
+        with open(liquid_txt_path, "r", encoding = "utf-8") as f:
             liquid_data = f.read().split()
-        with open(consonant_txt_path, "r") as f:
+        with open(consonant_txt_path, "r", encoding = "utf-8") as f:
             consonant_data = f.read().split()
         phones4json = {"vowels": vowel_data, "liquids": liquid_data}
         with open("nnsvs-db-converter/lang.sample.json", "w") as rawr:
