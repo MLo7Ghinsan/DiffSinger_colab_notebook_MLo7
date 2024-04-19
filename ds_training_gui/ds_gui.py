@@ -697,6 +697,7 @@ class App(tk.Tk):
         
         for raw_folder_name in os.listdir(self.all_shits):
             raw_folder_path = os.path.join(self.all_shits, raw_folder_name)
+            raw_folder_path = os.path.normpath(raw_folder_path)
             if any(filename.endswith(".lab") for filename in os.listdir(raw_folder_path)):
                 print("segmenting data...")
                 #dear god please work
