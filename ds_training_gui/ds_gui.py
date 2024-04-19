@@ -954,7 +954,7 @@ class App(tk.Tk):
         print(configpath)
 
     def train_function(self):
-        cuda = check_cuda_availability()
+        cuda = check_cuda()
         if cuda:
             cuda = "0"
         else:
