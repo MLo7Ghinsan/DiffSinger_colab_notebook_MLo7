@@ -16,7 +16,8 @@ class App(tk.Tk):
         self.geometry("850x600")
         self.title("DiffSinger Training GUI")
         self.resizable(False, False)
-        self.iconbitmap("sussy.ico")
+        icon = tk.PhotoImage(file="sussy.png")
+        self.iconphoto(True, icon)
         style = ttk.Style()
         style.theme_use('clam')
         style.configure('.', background = "gray18", font = "Bahnschrift", bordercolor = "gray69") #gray cus i like gray since it sounds close to gay
@@ -704,7 +705,7 @@ class App(tk.Tk):
             if any(filename.endswith(".lab") for filename in os.listdir(raw_folder_path)):
                 print("segmenting data...")
                 #dear god please work
-                cmd = ['python', 'nnsvs-db-converter\db_converter.py', '-l', str(max_wav_length), '-s', str(max_silence), '-S', str(max_silence_length), '-L', 'nnsvs-db-converter/lang.sample.json', '-F', '1600', "--folder", raw_folder_path]
+                cmd = ['python', 'nnsvs-db-converter/db_converter.py', '-l', str(max_wav_length), '-s', str(max_silence), '-S', str(max_silence_length), '-L', 'nnsvs-db-converter/lang.sample.json', '-F', '1600', "--folder", raw_folder_path]
                 if self.estimatemidivar.get() == True:
                     cmd.append('-mD')
                     cmd.append('-f')
@@ -985,9 +986,9 @@ class App(tk.Tk):
             self.label.config(text="Please select your config and the checkpoint you would like to export first!")
             return
         export_check = expselect.get()
-        ckpt_main = "Diffsinger\checkpoints"
+        ckpt_main = "Diffsinger/checkpoints"
         ckpt_dir_rel = os.path.relpath(ckpt_save_dir, ckpt_main)
-        ckpt_dir_short = ckpt_dir_rel.lstrip("..\checkpoints\\")
+        ckpt_dir_short = ckpt_dir_rel.lstrip("../checkpoints//")
         print(ckpt_dir_rel)
         print(ckpt_dir_short)
         onnx_folder_dir = ckpt_save_dir + "/onnx"
