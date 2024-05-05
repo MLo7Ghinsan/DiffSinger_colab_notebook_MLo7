@@ -681,15 +681,15 @@ class App(tk.Tk):
             f.write(" ".join(consonant_data))
 
         # here's a funny json append
-        print("appending lang.sample.json...")
-        with open(vowel_txt_path, "r", encoding = "utf-8") as f:
+        with open(vowel_txt_path, "r") as f:
             vowel_data = f.read().split()
-        with open(liquid_txt_path, "r", encoding = "utf-8") as f:
+        with open(liquid_txt_path, "r") as f:
             liquid_data = f.read().split()
-        with open(consonant_txt_path, "r", encoding = "utf-8") as f:
+        with open(consonant_txt_path, "r") as f:
             consonant_data = f.read().split()
-        phones4json = {"vowels": vowel_data, "liquids": liquid_data}
-        with open("nnsvs-db-converter/lang.sample.json", "w") as rawr:
+        liquid_list = {liquid: True for liquid in liquid_data} #temp fix, might need more research about the push in timing'''
+        phones4json = {"vowels": vowel_data, "liquids": liquid_list}
+        with open("/content/nnsvs-db-converter/lang.sample.json", "w") as rawr:
             json.dump(phones4json, rawr, indent=4)
 
         with open("db_converter_config.yaml", "r") as config:
