@@ -681,11 +681,11 @@ class App(tk.Tk):
             f.write(" ".join(consonant_data))
 
         # here's a funny json append
-        with open(vowel_txt_path, "r") as f:
+        with open(vowel_txt_path, "r", encoding = "utf-8") as f:
             vowel_data = f.read().split()
-        with open(liquid_txt_path, "r") as f:
+        with open(liquid_txt_path, "r", encoding = "utf-8") as f:
             liquid_data = f.read().split()
-        with open(consonant_txt_path, "r") as f:
+        with open(consonant_txt_path, "r", encoding = "utf-8") as f:
             consonant_data = f.read().split()
         liquid_list = {liquid: True for liquid in liquid_data} #temp fix, might need more research about the push in timing'''
         phones4json = {"vowels": vowel_data, "liquids": liquid_list}
