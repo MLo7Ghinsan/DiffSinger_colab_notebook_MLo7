@@ -4,7 +4,7 @@ ___
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
-- ds (DiffSinger .ds file) [not fully tested in colab]
+- ds (DiffSinger .ds file) [broken]
 
 #### NOTE:
 
@@ -137,7 +137,7 @@ ___
 #### Plans (update might not be in order):
 
 - [notebook] improve SOFA notebook, add inference
-- [notebook] REMOVE MFA inference notebook (migrate to SOFA or something)
+- [notebook] fix .ds training option
 
 ___
 
