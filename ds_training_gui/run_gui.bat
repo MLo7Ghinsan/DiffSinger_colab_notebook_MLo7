@@ -24,4 +24,4 @@ pip install tk tqdm PyYAML requests -q
 
 rem cd the dir into the current directory cus why not <3
 cd /d "%~dp0"
-python ds_gui.py
+python check_update.py
