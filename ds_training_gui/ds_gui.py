@@ -1037,9 +1037,9 @@ class App(tk.Tk):
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
         os.environ["CUDA_VISIBLE_DEVICES"] = cuda
-        if not aco_folder_dir or not var_folder_dir:
-            self.label.config(text="Please select both onnx export folders!")
-            return
+        #if not aco_folder_dir or not var_folder_dir:
+            #self.label.config(text="Please select both onnx export folders!")
+            #return
         ou_name = ou_name_var.get()
         dict_path = aco_folder_dir + "/dictionary.txt"
         cmd = ['python', 'scripts/build_ou_vb.py', '--acoustic_onnx_folder', aco_folder_onnx, '--acoustic_config', aco_config, '--variance_onnx_folder', var_folder_onnx, '--variance_config', var_config, '--dictionary_path', dict_path, '--save_path', ou_export_location, '--name', ou_name]
