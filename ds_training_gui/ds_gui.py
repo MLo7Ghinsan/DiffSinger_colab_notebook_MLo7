@@ -3,9 +3,10 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, Menu
 from tqdm import tqdm
 from contextlib import contextmanager
-from check_cuda import check_cuda
+#from check_cuda import check_cuda
+    ##oh the hubris
 
-update_date = "4/18/2024"
+update_date = "5/13/2024"
 
 main_path = os.getcwd()
 
@@ -75,9 +76,7 @@ class App(tk.Tk):
         tab1.label.pack()
         tab1.label = ttk.Label(tab1, text =f"updated {update_date}", font = "Bahnschrift 10")
         tab1.label.pack()
-        tab1.button = ttk.Button(tab1, text="Full download(no CUDA)", command=self.dl_scripts_github)
-        tab1.button.pack()
-        tab1.button = ttk.Button(tab1, text="Full download(yes CUDA)", command=self.dl_scripts_github2)
+        tab1.button = ttk.Button(tab1, text="Full download", command=self.dl_scripts_github)
         tab1.button.pack()
         tab1.button = ttk.Button(tab1, text="Update DS/Segmenter", command=self.dl_update)
         tab1.button.pack()
@@ -333,117 +332,34 @@ class App(tk.Tk):
             zip_ref.extractall(vocoder_folder)
         os.remove(vocoder_zip)
 
-        subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
-        subprocess.check_call(["pip", "install", "torch==1.13.0"])
-        subprocess.check_call(["pip", "install", "torchvision==0.14.0"])
-        subprocess.check_call(["pip", "install", "torchaudio==0.13.0"])
-        subprocess.check_call(["pip", "install", "protobuf"])
-        subprocess.check_call(["pip", "install", "onnxruntime"])
-
-        if os.path.exists("db_converter_config.yaml"):
-            os.remove("db_converter_config.yaml")
-
-        converter_config = {
-            "use_cents": True,
-            "time_step": 0.005,
-            "f0_min": 40,
-            "f0_max": 1200,
-            "audio_sample_rate": 44100,
-            "voicing_treshold_midi": 0.45,
-            "voicing_treshold_breath": 0.6,
-            "breath_window_size": 0.05,
-            "breath_min_length": 0.1,
-            "breath_db_threshold": -60,
-            "breath_centroid_treshold": 2000,
-            "max-length-relaxation-factor": 0.1,
-            "pitch-extractor": "parselmouth",
-            "write_label": "htk"
-        }
-        with open("db_converter_config.yaml", "w") as config:
-            yaml.dump(converter_config, config)
-
-        print("Setup Complete!")
-
-    def dl_scripts_github2(self):
-        if not os.path.exists(all_shits_not_wav_n_lab):
-          os.makedirs(all_shits_not_wav_n_lab)
-        uta_url = "https://github.com/UtaUtaUtau/nnsvs-db-converter/archive/refs/heads/main.zip"
-        uta_zip = os.path.join(os.getcwd(), uta_url.split("/")[-1])  # current scripts dir to avoid issues
-        uta_script_folder_name = "nnsvs-db-converter-main"
-
-        diffsinger_url = "https://github.com/openvpi/DiffSinger/archive/refs/heads/main.zip"
-        diffsinger_zip = os.path.join(os.getcwd(), diffsinger_url.split("/")[-1])  # current scripts dir to avoid issues
-        diffsinger_script_folder_name = "DiffSinger-main"
-
-        vocoder_url = "https://github.com/openvpi/vocoders/releases/download/nsf-hifigan-44.1k-hop512-128bin-2024.02/nsf_hifigan_44.1k_hop512_128bin_2024.02.zip"
-        vocoder_zip = os.path.join(os.getcwd(), vocoder_url.split("/")[-1])  # current scripts dir to avoid issues
-        vocoder_folder = "DiffSinger/checkpoints"
-        vocoder_subfolder_name = "Diffsinger/checkpoints/nsf_hifigan_44.1k_hop512_128bin_2024.02"
-
-
-        if os.path.exists("nnsvs-db-converter") or os.path.exists("DiffSinger"):
-            user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them? Make sure any user files are backed up OUTSIDE of the Diffsinger folder.")
-            if not user_response:
-                return
-
-            if os.path.exists("nnsvs-db-converter"):
-                try:
-                    shutil.rmtree("nnsvs-db-converter")
-                except Exception as e:
-                    print(f"Error deleting the existing 'nnsvs-db-converter' folder: {e}")
-
-            if os.path.exists("DiffSinger"):
-                try:
-                    shutil.rmtree("DiffSinger")
-                except Exception as e:
-                    print(f"Error deleting the existing 'DiffSinger' folder: {e}")
-
-        response = requests.get(uta_url, stream = True)
-        total_size = int(response.headers.get("content-length", 0))
-        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading nnsvs-db-converter") as progress_bar:
-            with open("main.zip", "wb") as f:
-                for chunk in response.iter_content(chunk_size = 1024):
-                    if chunk:
-                        f.write(chunk)
-                        progress_bar.update(len(chunk))
-
-        with zipfile.ZipFile(uta_zip, "r") as zip_ref:
-            zip_ref.extractall()
-        os.remove(uta_zip)
-        if os.path.exists(uta_script_folder_name):
-            os.rename(uta_script_folder_name, "nnsvs-db-converter") #renaming stuff cus i dont wanna change my path from the nb much
-
-        response = requests.get(diffsinger_url, stream = True)
-        total_size = int(response.headers.get("content-length", 0))
-        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading DiffSinger") as progress_bar:
-            with open("main.zip", "wb") as f:
-                for chunk in response.iter_content(chunk_size = 1024):
-                    if chunk:
-                        f.write(chunk)
-                        progress_bar.update(len(chunk))
-
-        with zipfile.ZipFile(diffsinger_zip, "r") as zip_ref:
-            zip_ref.extractall()
-        os.remove(diffsinger_zip)
-        if os.path.exists(diffsinger_script_folder_name):
-            os.rename(diffsinger_script_folder_name, "DiffSinger") #this beech too
-
-        response = requests.get(vocoder_url, stream = True)
-        total_size = int(response.headers.get("content-length", 0))
-        with tqdm(total = total_size, unit = "B", unit_scale = True, desc = "downloading NSF-HifiGAN") as progress_bar:
-            with open("nsf_hifigan_44.1k_hop512_128bin_2024.02.zip", "wb") as f:
-                for chunk in response.iter_content(chunk_size = 1024):
-                    if chunk:
-                        f.write(chunk)
-                        progress_bar.update(len(chunk))
-        with zipfile.ZipFile(vocoder_zip, "r") as zip_ref:
-            zip_ref.extractall(vocoder_folder)
-        os.remove(vocoder_zip)
-
-        subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
-        subprocess.check_call(["pip", "install", "torch==1.13.1+cu117", "torchvision==0.14.1+cu117", "torchaudio==0.13.1", "--extra-index-url", "https://download.pytorch.org/whl/cu117"])
-        subprocess.check_call(["pip", "install", "protobuf"])
-        subprocess.check_call(["pip", "install", "onnxruntime"])
+        try:
+            output = subprocess.check_output(["nvcc", "--version"], stderr=subprocess.STDOUT).decode()
+            lines = output.split("\n")
+            for line in lines:
+                if "release" in line.lower():
+                    version = line.split()[-1]
+                    print("CUDA version:", version)
+                    subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
+                    subprocess.check_call(["pip", "install", "torch==1.13.1+cu117", "torchvision==0.14.1+cu117", "torchaudio==0.13.1", "--extra-index-url", "https://download.pytorch.org/whl/cu117"])
+                    subprocess.check_call(["pip", "install", "protobuf"])
+                    subprocess.check_call(["pip", "install", "onnxruntime"])
+                    break
+            else:
+                print("CUDA version not found")
+                subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
+                subprocess.check_call(["pip", "install", "torch==1.13.0"])
+                subprocess.check_call(["pip", "install", "torchvision==0.14.0"])
+                subprocess.check_call(["pip", "install", "torchaudio==0.13.0"])
+                subprocess.check_call(["pip", "install", "protobuf"])
+                subprocess.check_call(["pip", "install", "onnxruntime"])
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            print("CUDA is not available")
+            subprocess.check_call(["pip", "install", "-r", "DiffSinger/requirements.txt"])
+            subprocess.check_call(["pip", "install", "torch==1.13.0"])
+            subprocess.check_call(["pip", "install", "torchvision==0.14.0"])
+            subprocess.check_call(["pip", "install", "torchaudio==0.13.0"])
+            subprocess.check_call(["pip", "install", "protobuf"])
+            subprocess.check_call(["pip", "install", "onnxruntime"])
 
         if os.path.exists("db_converter_config.yaml"):
             os.remove("db_converter_config.yaml")
@@ -484,7 +400,6 @@ class App(tk.Tk):
         vocoder_zip = os.path.join(os.getcwd(), vocoder_url.split("/")[-1])  # current scripts dir to avoid issues
         vocoder_folder = "DiffSinger/checkpoints"
         vocoder_subfolder_name = "Diffsinger/checkpoints/nsf_hifigan_44.1k_hop512_128bin_2024.02"
-
 
         if os.path.exists("nnsvs-db-converter") or os.path.exists("DiffSinger"):
             user_response = messagebox.askyesno("File Exists", "Necessary files already exist. Do you want to re-download and replace them? Make sure any user files are backed up OUTSIDE of the Diffsinger folder.")
@@ -681,6 +596,7 @@ class App(tk.Tk):
             f.write(" ".join(consonant_data))
 
         # here's a funny json append
+        print("appending lang.sample.json...")
         with open(vowel_txt_path, "r", encoding = "utf-8") as f:
             vowel_data = f.read().split()
         with open(liquid_txt_path, "r", encoding = "utf-8") as f:
@@ -810,7 +726,7 @@ class App(tk.Tk):
             raw_dir.append(folder_path)
         if num_spk == 1:
             singer_type = "SINGLE-SPEAKER"
-            diff_loss_type = "l2"
+            diff_loss_type = "l1"
             f0_emb = "continuous"
             f0_maxx = 1600
             use_spk_id = False
@@ -842,17 +758,6 @@ class App(tk.Tk):
         for i, spk_name in enumerate(spk_name):
             spk_id_format = f"{i}:{spk_name}"
             spk_id.append(spk_id_format)
-
- # commenting this out bc its pointless, tbh it doesnt even needs its own def, just include it with write_config or sumn
- # you can remove this btw if you feel like it, if not then i can come back to it later
- #       def update_precision(selected_value):
- #           with open("DiffSinger/configs/base.yaml", "r") as config:
- #               config_data = yaml.safe_load(config)
- #           config_data["pl_trainer_precision"] = precision.get()
- #           with open("DiffSinger/configs/base.yaml", "w") as config:
- #               yaml.dump(config_data, config)
-
- #       def update_config():   <----- this is not really needed
         enable_fixed_aug = fixedaug.get()
         enable_random_aug = randomaug.get()
         enable_stretch_aug = stretchaug.get()
@@ -930,11 +835,22 @@ class App(tk.Tk):
             f.write(up_f0_val)
 
     def binarize(self):
-        cuda = check_cuda()
-        if cuda:
-            cuda = "0"
-        else:
+        try:
+            output = subprocess.check_output(["nvcc", "--version"], stderr=subprocess.STDOUT).decode()
+            lines = output.split("\n")
+            for line in lines:
+                if "release" in line.lower():
+                    version = line.split()[-1]
+                    print("CUDA version:", version)
+                    cuda = "0"
+                    break
+            else:
+                print("CUDA version not found")
+                cuda = "-1"
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            print("CUDA is not available")
             cuda = "-1"
+        os.chdir(main_path)
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
         os.environ["CUDA_VISIBLE_DEVICES"] = cuda
@@ -960,11 +876,22 @@ class App(tk.Tk):
         print(configpath)
 
     def train_function(self):
-        cuda = check_cuda()
-        if cuda:
-            cuda = "0"
-        else:
+        try:
+            output = subprocess.check_output(["nvcc", "--version"], stderr=subprocess.STDOUT).decode()
+            lines = output.split("\n")
+            for line in lines:
+                if "release" in line.lower():
+                    version = line.split()[-1]
+                    print("CUDA version:", version)
+                    cuda = "0"
+                    break
+            else:
+                print("CUDA version not found")
+                cuda = "-1"
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            print("CUDA is not available")
             cuda = "-1"
+        os.chdir(main_path)
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
         os.environ["CUDA_VISIBLE_DEVICES"] = cuda
@@ -979,6 +906,22 @@ class App(tk.Tk):
         print("export path: " + onnx_folder_dir)
 
     def run_onnx_export(self):
+        try:
+            output = subprocess.check_output(["nvcc", "--version"], stderr=subprocess.STDOUT).decode()
+            lines = output.split("\n")
+            for line in lines:
+                if "release" in line.lower():
+                    version = line.split()[-1]
+                    print("CUDA version:", version)
+                    cuda = "0"
+                    break
+            else:
+                print("CUDA version not found")
+                cuda = "-1"
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            print("CUDA is not available")
+            cuda = "-1"
+        os.chdir(main_path)
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
@@ -1075,12 +1018,28 @@ class App(tk.Tk):
         print("export path: " + ou_export_location)
 
     def run_OU_config(self):
+        try:
+            output = subprocess.check_output(["nvcc", "--version"], stderr=subprocess.STDOUT).decode()
+            lines = output.split("\n")
+            for line in lines:
+                if "release" in line.lower():
+                    version = line.split()[-1]
+                    print("CUDA version:", version)
+                    cuda = "0"
+                    break
+            else:
+                print("CUDA version not found")
+                cuda = "-1"
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            print("CUDA is not available")
+            cuda = "-1"
+        os.chdir(main_path)
         os.chdir("DiffSinger")
         os.environ["PYTHONPATH"] = "."
-        os.environ["CUDA_VISIBLE_DEVICES"] = ""
-        ##if not aco_folder_dir or var_folder_dir:                             (for some reason this keeps tripping even if those variables are set)
-            ##self.label.config(text="Please select both onnx export folders!")
-            ##return
+        os.environ["CUDA_VISIBLE_DEVICES"] = cuda
+        #if not aco_folder_dir or not var_folder_dir:
+            #self.label.config(text="Please select both onnx export folders!")
+            #return
         ou_name = ou_name_var.get()
         dict_path = aco_folder_dir + "/dictionary.txt"
         cmd = ['python', 'scripts/build_ou_vb.py', '--acoustic_onnx_folder', aco_folder_onnx, '--acoustic_config', aco_config, '--variance_onnx_folder', var_folder_onnx, '--variance_config', var_config, '--dictionary_path', dict_path, '--save_path', ou_export_location, '--name', ou_name]
