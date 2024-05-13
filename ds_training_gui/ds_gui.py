@@ -3,10 +3,8 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, Menu
 from tqdm import tqdm
 from contextlib import contextmanager
-#from check_cuda import check_cuda
-    ##oh the hubris
 
-update_date = "5/13/2024"
+version = "0.0.1"
 
 main_path = os.getcwd()
 
@@ -74,7 +72,7 @@ class App(tk.Tk):
         tab1.label.pack(side = "top", pady = (200, 0))
         tab1.label = ttk.Label(tab1, text ="by MLo7 & AgentAsteriski")
         tab1.label.pack()
-        tab1.label = ttk.Label(tab1, text =f"updated {update_date}", font = "Bahnschrift 10")
+        tab1.label = ttk.Label(tab1, text =f"version {version}", font = "Bahnschrift 10")
         tab1.label.pack()
         tab1.button = ttk.Button(tab1, text="Full download", command=self.dl_scripts_github)
         tab1.button.pack()
