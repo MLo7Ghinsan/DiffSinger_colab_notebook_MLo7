@@ -121,18 +121,6 @@ ___
 - this notebook is still a rough draft, please either don't use it at all or use it with caution....
 
 ___
-## MFA inference notebook: <a href="https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/lab_base_maker_AutoLabelingForSVS.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
-
-### current supported data format:
-- wav
-- txt + wav (wav with text transcription)
-- lab + wav (wav with text transcription)
-
-#### NOTE:
-
-- this notebook is the alternative force alignment option, but SOFA should works better on singing data
-- zip must have no subfolders
-___
 
 #### Plans (update might not be in order):
 
