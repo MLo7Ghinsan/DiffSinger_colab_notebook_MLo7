@@ -4,7 +4,7 @@ ___
 ### current supported data format:
 - lab + wav (NNSVS format)
 - csv + wav (DiffSinger format)
-- ds (DiffSinger .ds file) [broken]
+- ds (DiffSinger .ds files)
 
 #### NOTE:
 
@@ -125,7 +125,6 @@ ___
 #### Plans (update might not be in order):
 
 - [notebook] improve SOFA notebook, add inference
-- [notebook] fix .ds training option
 
 ___
 
