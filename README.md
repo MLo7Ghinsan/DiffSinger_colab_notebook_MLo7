@@ -16,7 +16,8 @@ ___
 
 Zip file format [examples](https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/releases/tag/ref):
 <pre>
-#single speaker (lab + wav | ds + wav)
+[NOTE] .ds training has the same zip organization as lab + wav, but with only .ds files- no wav needed
+#single speaker (lab + wav)
 your_zip.zip:
     |
     |
@@ -24,13 +25,13 @@ your_zip.zip:
         |
         |
         data_1.wav
-        data_1.lab (or.ds)
+        data_1.lab
         .
         data_2.wav
-        data_2.lab (or.ds)
+        data_2.lab
         .
         data_3.wav
-        data_3.lab (or.ds)
+        data_3.lab
         .
         ...
 </pre>
@@ -47,7 +48,7 @@ your_zip.zip:
         transcriptions.csv
 </pre>
 <pre>
-#multi speaker (lab + wav | ds + wav)
+#multi speaker (lab + wav)
 your_zip.zip:
     |
     |
@@ -55,26 +56,26 @@ your_zip.zip:
         |
         |
         data_1.wav
-        data_1.lab (or.ds)
+        data_1.lab
         .
         data_2.wav
-        data_2.lab (or.ds)
+        data_2.lab
         .
         data_3.wav
-        data_3.lab (or.ds)
+        data_3.lab
         .
         ...
     your_speaker_folder_2:
         |
         |
         data_1.wav
-        data_1.lab (or.ds)
+        data_1.lab
         .
         data_2.wav
-        data_2.lab (or.ds)
+        data_2.lab
         .
         data_3.wav
-        data_3.lab (or.ds)
+        data_3.lab
         .
         ...
 </pre>
