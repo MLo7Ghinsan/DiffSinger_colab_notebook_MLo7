@@ -126,6 +126,7 @@ ___
 #### Plans (update might not be in order):
 
 - [notebook] improve SOFA notebook, add inference
+- [script] remove the gui script and re-link to the newer gui script
 
 ___
 
