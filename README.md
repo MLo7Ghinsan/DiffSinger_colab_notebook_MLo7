@@ -11,7 +11,7 @@ ___
 #### NOTE:
 
 - your_speaker_folder's folder name will be used as *spk_name* so please be careful about your file naming
-- colab notebook primarily uses python; thus space in file name or folder path may be invalid
+- colab notebook primarily uses python; thus space and special character in file name or folder path may be invalid
 - for an in-depth guide for SVS training and/or labeling, please see [SVS Singing Voice Database - Tutorial](https://docs.google.com/document/d/1uMsepxbdUW65PfIWL1pt2OM6ZKa5ybTTJOpZ733Ht6s/edit?usp=sharing)
 - it is advised to edit your data using [SlurCutter](https://github.com/openvpi/MakeDiffSinger/releases) for a more refined data for your pitch model
 - please visit [DiffSinger Discord](https://discord.com/invite/wwbu2JUMjj) for any help and questions regarding model production
@@ -128,7 +128,6 @@ ___
 #### Plans (update might not be in order):
 
 - [notebook] improve SOFA notebook, add inference
-- [script] remove the gui script and re-link to the newer gui script
 
 ___
 
@@ -146,4 +145,4 @@ ___
     
   - [haru0l](https://x.com/mscoocoo2?s=20) for the base pretrain with embeds
 
-  - [AgentAsteriski](https://github.com/agentasteriski) for the current local GUI
+  - [AgentAsteriski](https://github.com/agentasteriski) for the local GUI
