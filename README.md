@@ -128,6 +128,7 @@ ___
 #### Plans (update might not be in order):
 
 - [notebook] improve SOFA notebook, add inference
+- [notebook] update dictionary conversion code for phoneme types in build OU
 
 ___
 
