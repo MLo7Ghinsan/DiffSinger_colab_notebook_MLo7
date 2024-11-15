@@ -129,6 +129,7 @@ ___
 
 - [notebook] improve SOFA notebook, add inference
 - [notebook] update dictionary conversion code for phoneme types in build OU
+- [notebook] add multi-dictionary DiffSinger training
 
 ___
 
