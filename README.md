@@ -129,7 +129,7 @@ ___
 
 - [notebook] improve SOFA notebook, add inference
 - [notebook] update dictionary conversion code for phoneme types in build OU
-- [notebook] clean up multi-dict notebook
+- [notebook] clean up multi-dict notebook and support logic for dictionary generating for out-of-spefied-lang labels (/)
 - [resource] add example file(s) for multi-dicitonary training
 
 ___
