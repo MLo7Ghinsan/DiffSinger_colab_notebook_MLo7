@@ -1,5 +1,3 @@
-## DO NOT USE YET, bug found, fix will be pushed asap.
-
 ## TODO
 
 - [ ] Code refactor for the sake of maintenance.
