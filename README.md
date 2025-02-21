@@ -1,4 +1,10 @@
-### Multidict notebook will be merged into the main one soon-ish
+## TODO
+
+- [ ] Code refactor for the sake of maintenance.
+- [ ] Support multidict training on main notebook.
+- [ ] Spanish Version?
+- [ ] Enhance documentation/make a FAQ.
+
 ___
 
 ### Custom Local Training GUI is moved to [DiffTrainer](https://github.com/agentasteriski/DiffTrainer)
