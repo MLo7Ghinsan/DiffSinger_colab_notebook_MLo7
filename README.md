@@ -1,3 +1,6 @@
+### Multidict notebook will be merged into the main one soon-ish
+___
+
 ### Custom Local Training GUI is moved to [DiffTrainer](https://github.com/agentasteriski/DiffTrainer)
 
 ___
