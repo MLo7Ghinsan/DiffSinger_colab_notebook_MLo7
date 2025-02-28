@@ -2,7 +2,7 @@
 
 - [ ] Code refactor for the sake of maintenance.
 - [ ] Support multidict training on main notebook.
-- [ ] Spanish Version.
+- [ ] Spanish Version (No ETA)
 - [ ] Enhance documentation/make a FAQ.
 - [ ] Inference cell inside training/Inference notebook.
 - [ ] Improve SOFA notebook.
