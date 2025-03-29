@@ -1,6 +1,7 @@
 ## TODO
 
-- [ ] Support multidict training on main notebook.
+- [x] Support multidict training on main notebook.
+- [ ] OpenUtau export for multidict compatibility
 - [ ] Inference cell inside training/Inference notebook.
 - [ ] Improve SOFA notebook.
 
