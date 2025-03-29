@@ -1,7 +1,15 @@
+## TODO
+
+- [ ] Support multidict training on main notebook.
+- [ ] Inference cell inside training/Inference notebook.
+- [ ] Improve SOFA notebook.
+
+___
+
 ### Custom Local Training GUI is moved to [DiffTrainer](https://github.com/agentasteriski/DiffTrainer)
 
 ___
-## DiffSinger training notebook: <a href="https://colab.research.google.com/github/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/DiffSinger_colab_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
+## DiffSinger training notebook: <a href="https://colab.research.google.com/github/usamireko/DiffSinger_colab_notebook_MLo7/blob/main/DiffSinger_colab_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
 
 ### current supported data format:
 - lab + wav (NNSVS format)
@@ -103,7 +111,7 @@ your_zip.zip:
 
 ___
 
-## Vocoder finetuning notebook: <a href="https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/NSF_hifigan_finetuning_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
+## Vocoder finetuning notebook: <a href="https://github.com/usamireko/DiffSinger_colab_notebook_MLo7/blob/main/PC_NSF_NSF_hifigan_finetuning_notebook.ipynb"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" style="width: 150px;"/> </a>
 
 ### current supported data format:
 - wav
@@ -149,3 +157,4 @@ ___
   - [haru0l](https://x.com/mscoocoo2?s=20) for the base pretrain with embeds
 
   - [AgentAsteriski](https://github.com/agentasteriski) for the local GUI
+    
