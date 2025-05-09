@@ -2,13 +2,16 @@
 
 - [x] Support multidict training on main notebook.
 - [ ] OpenUtau export for multidict compatibility
-- [ ] Inference cell inside training/Inference notebook.
+- [x] Inference cell inside training/Inference notebook.
 - [ ] Improve SOFA notebook.
 
 ___
 
 ### Custom Local Training GUI is moved to [DiffTrainer](https://github.com/agentasteriski/DiffTrainer)
 
+___
+
+### Want to render on CLI for a quick test? Use the [Inference notebook. ](Diffsinger_Inference_CLI.ipynb)More info on [inference.md](inference.md)
 ___
 
 ### Please see [data_example.md](https://github.com/MLo7Ghinsan/DiffSinger_colab_notebook_MLo7/blob/main/data_example.md) for the data setup format
