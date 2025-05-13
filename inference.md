@@ -12,5 +12,7 @@ This is simple notebook that aims to make CLI inference easier for everyone
 - gender = Gender parameter from -1 to 1
 - output_path = Path to where to drop the generated WAV
 - output_filename = Name of the generated WAV
+- seed = seed used when rendering, leave it to the default -1 unless you are doing several tests and consistency is important
+- key = Key transition of pitch
 - render_steps = How many steps to render, more isnt always better!
 - playback = Do you want to listen the result? Click this
